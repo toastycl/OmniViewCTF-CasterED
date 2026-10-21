@@ -1,3 +1,6 @@
+> **Unreal Arena variant branch**  
+> This branch builds the separate package `OmniViewCTF_CasterED_UA`. It can coexist with the neutral `OmniViewCTF_CasterED` package and enables the Unreal Arena logo by default.
+
 # OmniViewCTF - Caster Edition v2.0
 
 OmniViewCTF - Caster Edition is a neutral broadcast-oriented fork of OmniViewCTF for Unreal Tournament 99 CTF.
