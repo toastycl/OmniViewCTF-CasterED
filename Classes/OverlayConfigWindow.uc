@@ -3,7 +3,7 @@ class OverlayConfigWindow expands UWindowFramedWindow;
 function BeginPlay()
 {
   Super.BeginPlay();
-  WindowTitle = "OmniViewCTF - Caster Edition";
+  WindowTitle = "OmniViewCTF - Caster Edition (Unreal Arena)";
   ClientClass = class'OverlayConfigTab';
   bSizable = false;
   bStatusBar = true;
