@@ -3868,14 +3868,14 @@ local float XL,YL;
 
 defaultproperties
 {
-	BigNums(0)=Texture'OmniViewCTF_CasterED.Icons.NumZero'
-	BigNums(1)=Texture'OmniViewCTF_CasterED.Icons.NumOne'
-	BigNums(2)=Texture'OmniViewCTF_CasterED.Icons.NumTwo'
-	BigNums(3)=Texture'OmniViewCTF_CasterED.Icons.NumThree'
-	BigNums(4)=Texture'OmniViewCTF_CasterED.Icons.NumFour'
-	BigNums(5)=Texture'OmniViewCTF_CasterED.Icons.NumFive'
-	BigNums(6)=Texture'OmniViewCTF_CasterED.Icons.NumSix'
-	BigNums(7)=Texture'OmniViewCTF_CasterED.Icons.NumSeven'
-	BigNums(8)=Texture'OmniViewCTF_CasterED.Icons.NumEight'
-	BigNums(9)=Texture'OmniViewCTF_CasterED.Icons.NumNine'
+	BigNums(0)=Texture'OmniViewCTF_CasterED_UA.Icons.NumZero'
+	BigNums(1)=Texture'OmniViewCTF_CasterED_UA.Icons.NumOne'
+	BigNums(2)=Texture'OmniViewCTF_CasterED_UA.Icons.NumTwo'
+	BigNums(3)=Texture'OmniViewCTF_CasterED_UA.Icons.NumThree'
+	BigNums(4)=Texture'OmniViewCTF_CasterED_UA.Icons.NumFour'
+	BigNums(5)=Texture'OmniViewCTF_CasterED_UA.Icons.NumFive'
+	BigNums(6)=Texture'OmniViewCTF_CasterED_UA.Icons.NumSix'
+	BigNums(7)=Texture'OmniViewCTF_CasterED_UA.Icons.NumSeven'
+	BigNums(8)=Texture'OmniViewCTF_CasterED_UA.Icons.NumEight'
+	BigNums(9)=Texture'OmniViewCTF_CasterED_UA.Icons.NumNine'
 }
