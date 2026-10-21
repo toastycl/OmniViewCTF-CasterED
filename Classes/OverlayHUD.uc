@@ -847,7 +847,34 @@ simulated function DrawUAPlayerNames(Canvas Canvas)
 
 simulated function DrawUnrealArenaBrand(Canvas Canvas)
 {
-  // Caster Edition: Unreal Arena watermark intentionally disabled.
+  local float LogoSize, X, Y;
+  local color SavedColor;
+  local byte SavedStyle;
+
+  if (!class'OverlaySettings'.default.bShowUnrealArenaLogo)
+    return;
+
+  // 0 = small, 1 = normal, 2 = large
+  if (class'OverlaySettings'.default.iUnrealArenaLogoSize <= 0)
+    LogoSize = 75.0 * Scale;
+  else if (class'OverlaySettings'.default.iUnrealArenaLogoSize == 1)
+    LogoSize = 100.0 * Scale;
+  else
+    LogoSize = 125.0 * Scale;
+
+  SavedColor = Canvas.DrawColor;
+  SavedStyle = Canvas.Style;
+
+  X = Canvas.ClipX - LogoSize - (18.0 * Scale);
+  Y = Canvas.ClipY - LogoSize - (18.0 * Scale);
+
+  Canvas.Style = ERenderStyle.STY_Translucent;
+  Canvas.DrawColor = SetColor(255,255,255);
+  Canvas.SetPos(X, Y);
+  Canvas.DrawTile(Texture'UnrealArenaLogo', LogoSize, LogoSize, 0, 0, 256, 256);
+
+  Canvas.DrawColor = SavedColor;
+  Canvas.Style = SavedStyle;
 }
 
 
