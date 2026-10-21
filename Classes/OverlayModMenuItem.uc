@@ -7,6 +7,6 @@ function Execute()
 
 defaultproperties
 {
-	MenuCaption="&OmniViewCTF - Caster Edition"
+	MenuCaption="&OmniViewCTF - Caster Edition (Unreal Arena)"
 	MenuHelp=""
 }
