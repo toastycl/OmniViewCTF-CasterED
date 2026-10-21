@@ -4,7 +4,7 @@ class OverlayHUD extends ChallengeCTFHUD;
 #exec TEXTURE IMPORT FILE=Textures\UnrealArenaLogo.pcx NAME=UnrealArenaLogo MIPS=Off FLAGS=2
 #exec TEXTURE IMPORT FILE=Textures\amp_icon.pcx NAME=amp_icon MIPS=Off FLAGS=2
 #exec TEXTURE IMPORT FILE=Textures\armor_icon.bmp NAME=armor_icon MIPS=Off FLAGS=2
-#exec TEXTURE IMPORT FILE=Textures\belt_icon.pcx mp NAME=belt_icon MIPS=Off FLAGS=2
+#exec TEXTURE IMPORT FILE=Textures\belt_icon.pcx NAME=belt_icon MIPS=Off FLAGS=2
 #exec TEXTURE IMPORT FILE=Textures\pads_icon.pcx NAME=pads_icon MIPS=Off FLAGS=2
 #exec TEXTURE IMPORT FILE=Textures\health_icon.pcx NAME=health_icon MIPS=Off FLAGS=2
 #exec TEXTURE IMPORT FILE=Textures\boots_icon.pcx NAME=boots_icon MIPS=Off FLAGS=2
