@@ -20,6 +20,7 @@ Main goals of this version:
 - Player Compare
 - MVP Focus
 - Last Capture information
+- Scrollable Options page
 - Manual Start / Stop only
 
 ### Previous fork

@@ -28,6 +28,10 @@ var OverlayHUD OH;
 var Canvas CanvasX;
 var Font Font469_16, Font469_16b, Font469_18b;
 
+//////////////
+// LET'S GO //
+//////////////
+
 function UpdateAndSort()
 {
   local ReplicationInfo RI;
@@ -36,6 +40,7 @@ function UpdateAndSort()
   redPlayerCount=0;
   bluePlayerCount=0;
 
+// update arrays //
   foreach Level.AllActors (class 'ReplicationInfo', RI)
   {
     if (OH.Contains(string(RI.Class),"UTSReplicationInfo") && !UTS_Installed)
@@ -59,6 +64,7 @@ function UpdateAndSort()
   SortScores(bluePlayerCount,1);
 }
 
+// sort by player score //
 function SortScores(int N,byte Team)
 {
   local int i,j,Max;
@@ -93,6 +99,8 @@ function SortScores(int N,byte Team)
   }
 }
 
+// create usable player IDs //
+
 function PlayerReplicationInfo GetUAPlayerPRI(byte Team, int Index)
 {
   if (Index < 0 || Index >= 5)
@@ -115,6 +123,8 @@ function int GetUAPlayerCaps(byte Team, int Index)
   return BluePlayer[Index].Caps;
 }
 
+// v1.5.2: lightweight accessors for the live Unreal Arena MVP indicator.
+// Keep PlayerStats inside this class to avoid UT99's 255-byte cross-class limit.
 function string GetUAPlayerName(byte Team, int Index)
 {
   if (Index < 0 || Index >= 5)
@@ -241,6 +251,7 @@ function PlayerStats GetPlayerData(ReplicationInfo RI, PlayerReplicationInfo PRI
   local PlayerStats wowStats;
   wowStats = findStatByPRI(PRI);
 
+
   if (Pawn(PRI.Owner).Weapon != none)
   {
     TempStats.gotAMP = (Pawn(PRI.Owner).Weapon.Texture == FireTexture'UnrealShare.Belt_fx.UDamageFX');
@@ -258,6 +269,8 @@ function PlayerStats GetPlayerData(ReplicationInfo RI, PlayerReplicationInfo PRI
   TempStats.Grabs =  int(RI.GetPropertyText("Grabs"));
   TempStats.FCKills =  int(RI.GetPropertyText("FlagKills"));
   TempStats.Covers =  int(RI.GetPropertyText("Covers"));
+  // SmartCTF builds use slightly different names for this stat.
+  // Keep fallbacks so the Unreal Arena build remains compatible across variants.
   TempStats.Seals = GetSmartCTFStat(RI, "Seals", "Seal", "SealKills", "FlagSeals");
   TempStats.Frags =  int(RI.GetPropertyText("Frags"));
 
@@ -342,6 +355,7 @@ function PostRender(canvas canvas)
     SavedScreen = Canvas.ClipX+Canvas.ClipY;
   }
 
+  // macOS 469 compatibility: keep using the HUD's stock FontInfo fonts.
   if (Font469_16 == none && OH != none)
   Font469_16 = OH.UAFont16(Canvas);
   if (Font469_16b == none && OH != none)
@@ -352,6 +366,7 @@ function PostRender(canvas canvas)
   if ( !class'OverlaySettings'.default.bScoreBoardState )
   return;
 
+  // Keep the scoreboard out of the action: one compact panel in each top corner.
   PanelWidth = 570 * ResScale;
   DrawTeamPanel(Canvas, 0, 6 * ResScale, 6 * ResScale, ResScale);
   DrawTeamPanel(Canvas, 1, Canvas.ClipX - PanelWidth - (6 * ResScale), 6 * ResScale, ResScale);
@@ -367,6 +382,9 @@ function DrawTeamPanel(Canvas Canvas, byte Team, float StartX, float StartY, flo
   local bool bSpectated;
 
   PanelWidth = 570 * ResScale;
+
+  // FIX8: UT fonts do not scale continuously with our geometry.
+  // Measure the actual font and never allow a row to become shorter than the glyphs.
   Canvas.Font = Font469_16b;
   Canvas.StrLen("Ag", TextW, TextH);
   RowHeight = 19 * ResScale;
@@ -389,6 +407,8 @@ function DrawTeamPanel(Canvas Canvas, byte Team, float StartX, float StartY, flo
   else
   PlayerCount = bluePlayerCount;
 
+  // UA 2.0: charcoal broadcast header with a team-color rail and restrained gold separator.
+  // The geometry remains identical to FIX2 so chat/killfeed placement is unaffected.
   Canvas.Style = ERenderStyle.STY_Translucent;
   if (class'OverlaySettings'.default.bHighContrastMode)
   Canvas.DrawColor = SetColor(10,12,15);
@@ -398,6 +418,7 @@ function DrawTeamPanel(Canvas Canvas, byte Team, float StartX, float StartY, flo
   Canvas.SetPos(StartX, CurY);
   Canvas.DrawRect(Texture'white_1x1', PanelWidth, RowHeight);
 
+  // Thin top accent identifies the team without filling the whole header.
   Canvas.Style = ERenderStyle.STY_Normal;
   if (Team == 0)
   Canvas.DrawColor = SetColor(214,42,46);
@@ -415,6 +436,7 @@ function DrawTeamPanel(Canvas Canvas, byte Team, float StartX, float StartY, flo
   if (class'OverlaySettings'.default.bPlayerNumbers)
   DrawTextLeft(Canvas, "#", StartX + 7 * ResScale, HeaderTextY, false, true);
 
+  // Team label gets the team accent; column labels stay neutral for readability.
   if (Team == 0)
   Canvas.DrawColor = SetColor(238,82,84);
   else
@@ -434,6 +456,7 @@ function DrawTeamPanel(Canvas Canvas, byte Team, float StartX, float StartY, flo
   DrawTextRight(Canvas, "FRG", FragsX, HeaderTextY, false, true);
   DrawTextRight(Canvas, "EFF", EffX, HeaderTextY, false, true);
 
+  // Quiet separator: helps distinguish labels from live rows without adding height.
   Canvas.Style = ERenderStyle.STY_Normal;
   Canvas.DrawColor = SetColor(218,174,70);
   Canvas.SetPos(StartX, CurY + RowHeight - 1 * ResScale);
@@ -454,6 +477,7 @@ function DrawTeamPanel(Canvas Canvas, byte Team, float StartX, float StartY, flo
         CurrentPlayer.PlayerName == OH.PawnOwner.PlayerReplicationInfo.PlayerName)
     bSpectated = true;
 
+    // Mostly neutral rows: much less screen tint, while keeping subtle zebra separation.
     Canvas.Style = ERenderStyle.STY_Translucent;
     if (class'OverlaySettings'.default.bHighContrastMode)
     {
@@ -476,6 +500,7 @@ function DrawTeamPanel(Canvas Canvas, byte Team, float StartX, float StartY, flo
     Canvas.SetPos(StartX, CurY);
     Canvas.DrawRect(Texture'white_1x1', PanelWidth, RowHeight);
 
+    // A subtle team edge keeps rows visually associated with RED/BLUE.
     Canvas.Style = ERenderStyle.STY_Normal;
     if (Team == 0)
     Canvas.DrawColor = SetColor(150,30,34);
@@ -484,6 +509,7 @@ function DrawTeamPanel(Canvas Canvas, byte Team, float StartX, float StartY, flo
     Canvas.SetPos(StartX, CurY);
     Canvas.DrawRect(Texture'white_1x1', 2 * ResScale, RowHeight);
 
+    // Spectated player: bright neutral/gold marker, readable without a large filled row.
     if (bSpectated)
     {
       Canvas.DrawColor = SetColor(218,174,70);
@@ -491,6 +517,7 @@ function DrawTeamPanel(Canvas Canvas, byte Team, float StartX, float StartY, flo
       Canvas.DrawRect(Texture'white_1x1', 4 * ResScale, RowHeight);
     }
 
+    // Preserve AMP countdown bar, but make it subtler than the row background.
     if (class'OverlaySettings'.default.iAmpEffects == 2 && CurrentPlayer.PRI != none && CurrentPlayer.PRI.TimeAcc != -1)
     {
       Canvas.DrawColor = SetColor(44,20,62);
@@ -499,6 +526,8 @@ function DrawTeamPanel(Canvas Canvas, byte Team, float StartX, float StartY, flo
       Canvas.DrawRect(Texture'white_1x1', ((PanelWidth - (4 * ResScale)) / 30.0) * CurrentPlayer.PRI.TimeAcc, RowHeight);
     }
 
+    // UA 2.0 row frame: a single muted baseline keeps dense stats aligned
+    // without adding another bright decorative rail.
     Canvas.Style = ERenderStyle.STY_Normal;
     Canvas.DrawColor = SetColor(28,31,37);
     Canvas.SetPos(StartX + (4 * ResScale), CurY + RowHeight - 1);
@@ -514,6 +543,7 @@ function DrawTeamPanel(Canvas Canvas, byte Team, float StartX, float StartY, flo
     if (class'OverlaySettings'.default.bPlayerNumbers)
     DrawTextLeft(Canvas, string(CurrentPlayer.PlayerNumber), StartX + 7 * ResScale, RowTextY, false, true);
 
+    // Player name remains the visual priority. The currently followed player gets a warm highlight.
     Canvas.Font = Font469_16b;
     if (bSpectated)
     Canvas.DrawColor = SetColor(236,198,104);
@@ -521,6 +551,8 @@ function DrawTeamPanel(Canvas Canvas, byte Team, float StartX, float StartY, flo
     Canvas.DrawColor = SetColor(232,235,240);
     DrawTextLeft(Canvas, shortenName(CurrentPlayer.PlayerName, 24, 176 * ResScale), NameX, RowTextY, false, true);
 
+    // Compact state badges get their own lane between player number and name.
+    // FC uses the enemy flag color and AMP uses purple, with enough breathing room to stay distinct from the nick.
     if (CurrentPlayer.PRI != none && CurrentPlayer.PRI.HasFlag != none && !OH.IsInWarmup())
     {
       if (Team == 0)
@@ -547,12 +579,14 @@ function DrawTeamPanel(Canvas Canvas, byte Team, float StartX, float StartY, flo
     DrawTextRight(Canvas, string(CurrentPlayer.FCKills), FCKillsX, RowTextY, true, true);
     DrawTextRight(Canvas, string(CurrentPlayer.Covers), CoversX, RowTextY, true, true);
 
+    // Seals get a soft violet tone so the new stat is easy to scan without dominating.
     Canvas.DrawColor = SetColor(190,150,224);
     DrawTextRight(Canvas, string(CurrentPlayer.Seals), SealsX, RowTextY, true, true);
 
     Canvas.DrawColor = SetColor(218,222,228);
     DrawTextRight(Canvas, string(CurrentPlayer.Frags), FragsX, RowTextY, false, true);
 
+    // Efficiency is the only metric with semantic color coding.
     if (CurrentPlayer.Efficiency >= 60)
     Canvas.DrawColor = SetColor(128,216,156);
     else if (CurrentPlayer.Efficiency >= 40)
@@ -640,7 +674,7 @@ function DrawTextLeft(Canvas Canvas,string text, int X, int Y,optional bool hide
   Canvas.DrawText(text);
 }
 
-function DrawTextHighlighted(Canvas Canvas,string text, int X, int Y,optional bool hidezeros,optional bool dropshadow)
+function DrawTextHighlighted(Canvas Canvas,string text, int X, int Y,optional bool hidezeros,optional bool dropshadow)  //not in use atm
 {
   local color oldcolor;
   local int oldstyle,xo;

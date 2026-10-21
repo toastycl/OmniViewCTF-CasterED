@@ -24,7 +24,7 @@ Edit by **ToastyCL**.
 - Temporarily replaces the chat area while active
 - XLARGE responsive layout
 - Tracking fix for stale remote camera direction
-- Uses a compatible Pawn rotation fallback without relying on RemoteViewPitch
+- Compatible Pawn rotation fallback without relying on `RemoteViewPitch`
 
 ### Distribution changes
 - Package renamed to `OmniViewCTF_CasterED`

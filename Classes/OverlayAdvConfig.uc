@@ -155,6 +155,8 @@ function Created()
   EmptyLine.SetFont (F_Normal);
   Cury = Cury + 20;
 
+
+  // instagib //
   IG_DeathMsg = UWindowEditControl(CreateControl(class'UWindowEditControl', 10, Cury, 225, 1));
   IG_DeathMsg.editboxwidth=170;
   IG_DeathMsg.SetText("SuperShock");
@@ -170,6 +172,7 @@ function Created()
   EmptyLine.SetFont (F_Normal);
   Cury = Cury + 20;
 
+  // other //
   FALL_DeathMsg = UWindowEditControl(CreateControl(class'UWindowEditControl', 10, Cury, 225, 1));
   FALL_DeathMsg.editboxwidth=170;
   FALL_DeathMsg.SetText("Fall");
@@ -229,12 +232,14 @@ function Created()
   ResetButton.NotifyWindow = Self;
   Cury = Cury + 30;
 
+  // OBS stuff //
   OBSCompatibility = UMenuLabelControl(CreateControl(Class'UMenuLabelControl', 0.0, CurY, 240.0, 1.0));
   OBSCompatibility.SetText ("OBS Compatibility");
   OBSCompatibility.Align = TA_Center;
   OBSCompatibility.SetFont (F_Bold);
   Cury = Cury + 20;
 
+  // Offset on top for teams overlay //
   OBSOffset = UWindowComboControl(CreateControl(class'UWindowComboControl', 10.0, CurY, 225.0, 50.0));
   OBSOffset.SetText ("Offset for game info on top");
   OBSOffset.SetHelpText ("");
@@ -277,91 +282,109 @@ function Notify(UWindowDialogControl C, byte E)
           class'OverlaySettings'.default.IH_DM=IH_DeathMsg.GetValue();
           SaveToConfig();
         break;
+
         case TL_DeathMsg:
           C.NotifyWindow=self;
           class'OverlaySettings'.default.trans_DM=TL_DeathMsg.GetValue();
           SaveToConfig();
         break;
+
         case ENF_DeathMsg:
           C.NotifyWindow=self;
           class'OverlaySettings'.default.enforcer_DM=ENF_DeathMsg.GetValue();
           SaveToConfig();
         break;
+
         case BIO_DeathMsg:
           C.NotifyWindow=self;
           class'OverlaySettings'.default.bio_DM=BIO_DeathMsg.GetValue();
           SaveToConfig();
         break;
+
         case SHOCK_DeathMsg:
           C.NotifyWindow=self;
           class'OverlaySettings'.default.shock_DM=SHOCK_DeathMsg.GetValue();
           SaveToConfig();
         break;
+
         case PULSE_DeathMsg:
           C.NotifyWindow=self;
           class'OverlaySettings'.default.pulse_DM=PULSE_DeathMsg.GetValue();
-          SaveToConfig();
+         SaveToConfig();
         break;
+
         case RIPPER_DeathMsg:
           C.NotifyWindow=self;
           class'OverlaySettings'.default.ripper_DM=RIPPER_DeathMsg.GetValue();
           SaveToConfig();
         break;
+
         case MINI_DeathMsg:
           C.NotifyWindow=self;
           class'OverlaySettings'.default.mini_DM=MINI_DeathMsg.GetValue();
           SaveToConfig();
         break;
+
         case FLAK_DeathMsg:
           C.NotifyWindow=self;
           class'OverlaySettings'.default.flak_DM=FLAK_DeathMsg.GetValue();
           SaveToConfig();
         break;
+
         case RL_DeathMsg:
           C.NotifyWindow=self;
           class'OverlaySettings'.default.RL_DM=RL_DeathMsg.GetValue();
           SaveToConfig();
         break;
+
         case SNIPER_DeathMsg:
           C.NotifyWindow=self;
           class'OverlaySettings'.default.sniper_DM=SNIPER_DeathMsg.GetValue();
           SaveToConfig();
         break;
+
         case IG_DeathMsg:
           C.NotifyWindow=self;
           class'OverlaySettings'.default.IG_DM=IG_DeathMsg.GetValue();
           SaveToConfig();
         break;
+
         case FALL_DeathMsg:
           C.NotifyWindow=self;
           class'OverlaySettings'.default.Fall_DM=FALL_DeathMsg.GetValue();
           SaveToConfig();
         break;
+
         case DROWNED_DeathMsg:
           C.NotifyWindow=self;
           class'OverlaySettings'.default.Drowned_DM=DROWNED_DeathMsg.GetValue();
           SaveToConfig();
           break;
+
         case BURNED_DeathMsg:
           C.NotifyWindow=self;
           class'OverlaySettings'.default.Burned_DM=BURNED_DeathMsg.GetValue();
           SaveToConfig();
         break;
+
         case CORRODED_DeathMsg:
           C.NotifyWindow=self;
           class'OverlaySettings'.default.Corroded_DM=CORRODED_DeathMsg.GetValue();
           SaveToConfig();
         break;
+
         case MaleSuicide_DeathMsg:
           C.NotifyWindow=self;
           class'OverlaySettings'.default.MaleSuicide_DM=MaleSuicide_DeathMsg.GetValue();
           SaveToConfig();
         break;
+
         case FemaleSuicide_DeathMsg:
           C.NotifyWindow=self;
           class'OverlaySettings'.default.FemaleSuicide_DM=FemaleSuicide_DeathMsg.GetValue();
           SaveToConfig();
         break;
+
         case OBSOffset:
           class'OverlaySettings'.default.iOBSOffset = OBSOffset.GetSelectedIndex ();
           SaveToConfig();
