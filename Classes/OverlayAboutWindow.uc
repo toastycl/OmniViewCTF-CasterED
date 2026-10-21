@@ -20,7 +20,7 @@ function Created()
     Super.Created();
 
     OV_Title = UMenuLabelControl(CreateControl(Class'UMenuLabelControl', 0.0, 25.0, 240.0, 1.0));
-    OV_Title.SetText ("OmniViewCTF - Caster Edition");
+    OV_Title.SetText ("OmniViewCTF - Caster Edition UA");
    	OV_Title.Align = TA_Center;
    	OV_Title.TextColor.R = 0;
 	OV_Title.TextColor.G = 0;
@@ -41,7 +41,7 @@ function Created()
     OV_Version.SetFont (F_Normal);
 
     OV_Version = UMenuLabelControl(CreateControl(Class'UMenuLabelControl', 85.0, Cury, 150.0, 1.0));
-    OV_Version.SetText ("2.0 Caster Edition - ToastyCL");
+    OV_Version.SetText ("2.0 UA - ToastyCL");
    	OV_Version.Align = TA_Left;
     OV_Version.SetFont (F_Normal);
     Cury = Cury + 14;
