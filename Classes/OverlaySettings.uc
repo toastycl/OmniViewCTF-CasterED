@@ -1,4 +1,4 @@
-class OverlaySettings extends Info config(OmniViewCTF_CasterED);
+class OverlaySettings extends Info config(OmniViewCTF_CasterED_UA);
 
 var config bool bShowItemTimer, bShowHealthArmor, bFC_Info, bMsgLengthKF, bEasySwitch, bAutoAdjustCam, bAutoViewFC, bScoreBoardState, bShowAccuracy,
 bHighContrastMode, bPlayerNumbers, bShowShield, bShowAmp, bShowKeg, bShowArmor, bShowPads, bShowBoots, bShowInvis,
@@ -27,7 +27,7 @@ defaultproperties
 	bShowBoots=True
 	bShowInvis=True
 	bShowPlayerNames=True
-	bShowUnrealArenaLogo=False
+	bShowUnrealArenaLogo=True
 	iPlayerNameDistance=3500
 	iUnrealArenaLogoSize=1
 	iFlagEffects=1
