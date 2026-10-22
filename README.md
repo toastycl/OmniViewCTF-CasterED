@@ -1,48 +1,60 @@
-> **Unreal Arena variant branch**  
-> This branch builds the separate package `OmniViewCTF_CasterED_UA`. It can coexist with the neutral `OmniViewCTF_CasterED` package and enables the Unreal Arena logo by default.
+# OmniViewCTF - Caster Edition UA v2.0
 
-# OmniViewCTF - Caster Edition v2.0
+**OmniViewCTF - Caster Edition UA** is the Unreal Arena branded edition of OmniViewCTF - Caster Edition for **Unreal Tournament 99 Capture the Flag**.
 
-OmniViewCTF - Caster Edition is a neutral broadcast-oriented fork of OmniViewCTF for Unreal Tournament 99 CTF.
+Designed for spectators, casters, competitive matches and broadcasts, this edition provides a compact and information-rich CTF spectator interface while preserving the core OmniView experience.
 
-This version focuses on providing casters with a cleaner, more compact spectator HUD, additional broadcast tools, and configurable analysis panels, while keeping the original OmniView/SmartCTF information available.
+The UA edition is distributed as a separate Unreal Tournament package:
+
+```text
+OmniViewCTF_CasterED_UA
+```
+
+It can coexist with the standard Caster Edition:
+
+```text
+OmniViewCTF_CasterED
+```
+
+without replacing or overwriting it.
 
 ---
 
-## Version history
+## Version
 
-### v2.0 - Caster Edition
-Current release / edit by **ToastyCL**.
+**OmniViewCTF - Caster Edition UA v2.0**
 
-Main goals of this version:
-- Neutral caster-focused presentation
-- No watermark or branding
-- New secondary Player Cam
-- Improved spectator HUD and scoreboard
-- Better timer and powerup information
+Developed and maintained by **ToastyCL**  
+Unreal Arena branded edition.
+
+---
+
+## Overview
+
+Caster Edition UA focuses on improving the spectator experience for competitive CTF while keeping the match itself visible.
+
+Main features include:
+
+- Compact competitive scoreboard
+- Improved spectator HUD
+- Item and powerup timers
+- Flag Carrier and AMP identification
+- Player Cam
 - Player Compare
 - MVP Focus
-- Last Capture information
-- Scrollable Options page
-- Manual Start / Stop only
-
-### Previous fork
-**v1.1 rX edit**
-
-This Caster Edition keeps the fork history visible for traceability.
-
-### Original project
-Original OmniView4CTF by **Waylander / double_u**.
+- Last Capture tracking
+- Floating player names
+- Improved chat and kill feed positioning
+- Unreal Arena visual branding
 
 ---
 
-# What's new in v2.0
+## Compact CTF Scoreboard
 
-## 1. Compact caster scoreboard
+The scoreboard is designed for competitive casting while remaining compact.
 
-The scoreboard was redesigned to remain visible without covering too much of the game.
+Displayed statistics include:
 
-Displayed statistics:
 - Player number
 - Player name
 - Caps
@@ -53,20 +65,14 @@ Displayed statistics:
 - Frags
 - Efficiency
 
-Additional visual information:
-- Spectated player highlight
-- Flag Carrier indicator
-- AMP indicator
-- Team-based RED / BLUE accents
-- Efficiency color feedback
-
-The scoreboard is designed to scale correctly across common resolutions.
+Additional indicators include the spectated player, Flag Carrier, AMP status and RED / BLUE team accents.
 
 ---
 
-## 2. Improved spectator HUD
+## Spectator HUD
 
-When following a player, the lower HUD displays:
+When following a player, the lower spectator HUD can display:
+
 - Player name
 - Team
 - Health
@@ -74,73 +80,52 @@ When following a player, the lower HUD displays:
 - Flag Carrier status
 - AMP status
 
-When using Free Spect, the player-specific information is removed and the HUD switches to a cleaner Free Spect layout.
-
-The spectator HUD is responsive and was adjusted to avoid overlaps with timers and other interface elements.
+Free Spectator mode automatically removes player-specific information for a cleaner view.
 
 ---
 
-## 3. Smart item timers
+## Item and Powerup Timers
 
-The timer area supports important pickups such as:
+Supported pickups include:
+
 - Damage Amplifier
 - Shield Belt
+- Keg O' Health
 - Armor
 - Thigh Pads
-- Boots
-- Keg
+- Jump Boots
 - Invisibility
 
-Timer states include:
-- `UP` when the pickup is available
-- Countdown while waiting for respawn
-- Visual warning when the item is close to respawning
+Timer states provide visual feedback for available items, normal countdowns and imminent respawns.
 
 ### Multiple Shield Belts
 
-If a map contains two Shield Belts, they are both displayed as `BELT`, but the timer accent identifies the side:
+When a map contains multiple Shield Belts, timer accents help identify the side:
 
-- Red accent = Belt closer to RED base
-- Blue accent = Belt closer to BLUE base
-- Gold / neutral = single or neutral Belt
-
-This keeps the timer area compact while still making duplicated Belts understandable.
+- **Red** — closer to RED base
+- **Blue** — closer to BLUE base
+- **Gold** — single or neutral Belt
 
 ---
 
-## 4. Powerup ownership
-
-When OmniView can identify the owner reliably, the HUD can show who currently holds important powerups such as:
-- AMP
-- Shield Belt
-
-The system avoids displaying a player name when ownership cannot be confirmed.
-
----
-
-## 5. Last Capture
+## Last Capture
 
 After a capture, OmniView displays:
 
-`Last cap: PlayerName`
+```text
+Last cap: PlayerName
+```
 
-The player name uses the appropriate team color.
-
-The information stays visible until the next capture.
-
-A short retry window is used because SmartCTF team score and player capture statistics may replicate on different ticks. This helps prevent incorrect `Unknown` capture information.
+The scorer is resolved using a short SmartCTF replication window to reduce incorrect or unknown capture information.
 
 ---
 
-## 6. MVP indicator
+## MVP System
 
-During the final 60 seconds of a timed match, OmniView displays the current predicted:
+During the final 60 seconds of a timed match, OmniView can display the current predicted MVP.
 
-`MVP: PlayerName`
+The calculation considers:
 
-The MVP calculation is designed around CTF contribution rather than frags alone.
-
-It uses:
 - Caps
 - Grabs
 - FC Kills
@@ -149,250 +134,274 @@ It uses:
 - Frags
 - Efficiency
 
-This is a caster analysis feature and does not replace SmartCTF's official statistics.
+This is a caster analysis feature and does not replace official SmartCTF statistics.
 
 ---
 
-## 7. MVP Focus
+## MVP Focus
 
-A configurable key opens the detailed MVP Focus panel.
+A configurable key opens a detailed MVP Focus panel showing the current MVP candidate, team, CTF statistics and calculated MVP score.
 
-The panel shows:
-- Current MVP candidate
-- Team
-- Caps
-- Grabs
-- FC Kills
-- Covers
-- Seals
-- Frags
-- Efficiency
-- MVP Score contribution
-
-Press the same key again to close the panel.
-
-The panel uses a short broadcast-style transition when opening and closing.
-
-### Configuration
-
-Open:
-
-**Mod -> OmniViewCTF - Caster Edition**
-
-Then assign a key to:
-
-**MVP Focus key**
+Press the same key again to close it.
 
 ---
 
-## 8. Player Compare
+## Player Compare
 
-Player Compare allows the caster to compare two players without opening a full scoreboard.
+Player Compare allows the caster to compare two players during a live match.
 
-### How to use it
+### Usage
 
 1. Spectate the first player.
-2. Press the configured **Player Compare key**.
-3. That player becomes Player A.
+2. Press the configured **Player Compare** key.
+3. The current player becomes Player A.
 4. Change your normal spectator target.
 5. The newly spectated player becomes Player B.
-6. Press the Compare key again to close the panel.
+6. Press the Player Compare key again to close the panel.
 
-Compared statistics:
-- Caps
-- Grabs
-- FC Kills
-- Covers
-- Seals
-- Frags
-- Efficiency
-
-The panel uses the same transition style as MVP Focus.
-
-### Configuration
-
-Open:
-
-**Mod -> OmniViewCTF - Caster Edition**
-
-Assign a key to:
-
-**Player Compare key**
+Compared statistics include Caps, Grabs, FC Kills, Covers, Seals, Frags and Efficiency.
 
 ---
 
-## 9. Player Cam
+## Player Cam
 
-Caster Edition includes an optional secondary Player Cam.
+Caster Edition UA includes a secondary Player Cam that can remain locked to one player while the main spectator target changes.
 
-### How to use it
+### Usage
 
-1. Spectate the player you want to follow.
-2. Press the configured **Player Cam key**.
-3. A secondary camera opens in the lower-left area.
-4. The camera locks to that player.
-5. You can change your main spectator view while the Player Cam remains locked.
+1. Spectate a player.
+2. Press the configured **Player Cam** key.
+3. The secondary camera locks to that player.
+4. Change the main spectator target normally.
+5. Player Cam remains associated with the originally selected player.
 6. Press the Player Cam key again to close it.
 
-While Player Cam is open, the regular chat is temporarily hidden in that area. Chat returns automatically when Player Cam closes.
+The Player Cam uses a responsive 16:9 layout and temporarily replaces the normal chat area while active.
 
-The Player Cam uses the player's eye position and rotation to provide a first-person-style POV.
-
-The current stable Player Cam uses the validated **BV0 XLARGE** layout:
-- Larger 16:9 window
-- Responsive sizing
-- Positioned above the lower spectator HUD
-- Does not move the main spectator camera
-- Does not overlap HP / Armor / FC / AMP / timers
-
-### Important note
+### Technical note
 
 Player Cam uses Unreal Engine 1 `DrawPortal`.
 
-Depending on the renderer, first-person weapon rendering or some visual effects may differ from the normal playable first-person view.
+For the directly followed player, OmniView uses the available player view rotation. For a remotely locked player, it uses the UT99-compatible replicated pawn rotation.
 
-### Configuration
-
-Open:
-
-**Mod -> OmniViewCTF - Caster Edition**
-
-Assign a key to:
-
-**Player Cam key**
+Because UT99 does not expose identical remote first-person camera information in every client/build configuration, Player Cam should be considered a **first-person-style broadcast view**, not a guaranteed exact reconstruction of the remote player's local view.
 
 ---
 
-## 10. Floating player names
+## Floating Player Names
 
-Floating player names remain visible during spectator mode.
-
-Their presentation changes based on distance:
-- Close players: clearer / fuller name
-- Medium distance: more compact
-- Far distance: smaller and less intrusive
-
-Important states such as Flag Carrier and AMP remain visually identifiable.
+Floating names adapt to distance and can retain important player-state indicators such as Flag Carrier and AMP.
 
 ---
 
-## 11. Chat and kill feed layout
+## Chat and Kill Feed
 
-The interface was reorganized for casting:
+The interface is reorganized for casting:
 
-- Chat is located at the lower-left
-- Kill feed is positioned below the upper scoreboard
-- Center messages such as kills, sprees and objective messages are moved higher so they do not block the middle of the action
-- The `Say:` typing prompt is positioned below the scoreboard instead of overlapping it
-
-When Player Cam is active, it temporarily replaces the normal chat area.
-
----
-
-# Recommended first-time configuration
-
-Open:
-
-**Mod -> OmniViewCTF - Caster Edition**
-
-Configure at least the following:
-
-### Player Compare key
-Opens / closes Player Compare.
-
-### MVP Focus key
-Opens / closes MVP Focus.
-
-### Player Cam key
-Opens / closes Player Cam.
-
-Choose keys that do not conflict with your existing UT99 spectator controls.
+- Chat appears in the lower-left
+- Player Cam temporarily occupies the chat area while active
+- Kill feed is positioned below the scoreboard
+- Kill feed repositions when the scoreboard is disabled
+- Center messages are moved away from the center of gameplay
+- The `Say:` prompt is positioned below the scoreboard
 
 ---
 
-# Other useful settings
+## Unreal Arena Edition
 
-Existing OmniView settings are still available, including:
-- Scoreboard visibility
-- Player numbers
-- Player names
-- Chat size
-- Kill feed size
-- Item timers
-- High Contrast mode
-- AMP visual behavior
-- Flag Carrier information
-- Timer visibility
-- Pickup visibility
+This edition includes:
 
----
+- Unreal Arena logo
+- Branding enabled by default
+- Separate UT99 package namespace
+- Independent `.ini` configuration
+- Independent Mods menu entry
 
-# Starting and stopping OmniView
-
-Caster Edition does **not** use AutoStart.
-
-This is intentional so the package remains predictable across different caster setups and UT installations.
-
-Start and stop the HUD manually from:
-
-**Mod -> OmniViewCTF - Caster Edition -> Start / Stop**
-
----
-
-# Interface layout
-
-A typical Caster Edition layout looks like this:
+Package name:
 
 ```text
-+---------------- RED TEAM --------+ +-------- BLUE TEAM ----------------+
-| # Player CAP GRB FCK COV SEA... | | # Player CAP GRB FCK COV SEA... |
-| ... | | ... |
-+----------------------------------+ +----------------------------------+
-
- Match score / time
-
-
- Main game view
-
-
- [Player Cam - optional] Last cap / MVP
-
-
- Spectating Player | HP | Armor | FC | AMP
- Item timers / powerups
+OmniViewCTF_CasterED_UA
 ```
 
-The goal is to keep the game visible while still providing the caster with useful CTF information.
+The neutral and Unreal Arena editions can therefore coexist in the same UT99 installation.
 
 ---
 
-# Files
+## Installation
 
-- `OmniViewCTF_CasterED.u`
-- `OmniViewCTF_CasterED.int`
-- `OmniViewCTF_CasterED.ini`
+Copy these files to your Unreal Tournament `System` directory:
+
+```text
+OmniViewCTF_CasterED_UA.u
+OmniViewCTF_CasterED_UA.int
+OmniViewCTF_CasterED_UA.ini
+```
+
+Example:
+
+```text
+UnrealTournament/
+└── System/
+    ├── OmniViewCTF_CasterED_UA.u
+    ├── OmniViewCTF_CasterED_UA.int
+    └── OmniViewCTF_CasterED_UA.ini
+```
+
+Start Unreal Tournament after copying the files. The UA edition should appear in the **Mods** menu.
 
 ---
 
-# Credits
+## Starting OmniView
 
-Original OmniView4CTF:
-**Waylander / double_u**
+Caster Edition UA does not use AutoStart.
 
-Previous fork:
+Start or stop the HUD manually from:
+
+```text
+Mods
+→ OmniViewCTF - Caster Edition UA
+→ Start / Stop
+```
+
+---
+
+## Recommended Configuration
+
+Configure keys for:
+
+- Player Compare
+- MVP Focus
+- Player Cam
+
+Choose keys that do not conflict with existing UT99 spectator controls.
+
+Additional settings include scoreboard visibility, player numbers, floating names, chat size, kill feed size, item timers, Flag Carrier information, camera behavior and Unreal Arena logo visibility/size.
+
+---
+
+## Building From Source
+
+Recommended source layout:
+
+```text
+UnrealTournament/
+└── OmniViewCTF_CasterED_UA/
+    ├── Classes/
+    │   └── *.uc
+    └── Textures/
+        └── *.pcx / *.bmp
+```
+
+Add the package after its standard dependencies in `[Editor.EditorEngine]`:
+
+```ini
+EditPackages=UWindow
+EditPackages=UMenu
+EditPackages=Botpack
+EditPackages=OmniViewCTF_CasterED_UA
+```
+
+Run from the Unreal Tournament `System` directory:
+
+```text
+ucc make
+```
+
+A successful build generates:
+
+```text
+OmniViewCTF_CasterED_UA.u
+```
+
+Caster Edition UA v2.0 has been validated with a clean compile:
+
+```text
+Success - 0 error(s), 0 warnings
+```
+
+and has been successfully tested in Unreal Tournament 99.
+
+---
+
+## Compatibility
+
+Designed for **Unreal Tournament 99 CTF** spectator environments.
+
+The package uses standard UT99 dependencies including:
+
+- Engine
+- Botpack
+- UWindow
+- UMenu
+
+Some advanced CTF statistics depend on SmartCTF-compatible replicated information.
+
+Behavior may vary depending on UT99 build, renderer, server configuration, CTF mod and SmartCTF version.
+
+---
+
+## Package Separation
+
+Neutral edition:
+
+```text
+OmniViewCTF_CasterED
+```
+
+Unreal Arena edition:
+
+```text
+OmniViewCTF_CasterED_UA
+```
+
+Both can be installed simultaneously.
+
+---
+
+## Credits
+
+### Original Project
+
+**OmniView4CTF**  
+Original development: **Waylander / double_u**
+
+### Previous Fork
+
 **v1.1 rX edit**
 
-Caster Edition development:
-**ToastyCL**
+The previous fork history is preserved for project traceability.
 
-Please keep the original credits and fork history when redistributing modified versions.
+### Caster Edition
+
+Development and maintenance: **ToastyCL**
+
+### Unreal Arena Edition
+
+Branded implementation and development: **ToastyCL / Unreal Arena**
 
 ---
 
-## Release
+## License
 
-**OmniViewCTF - Caster Edition v2.0**
+This project follows the licensing lineage of the original OmniView project and is distributed under:
 
-**Caster Edition v2.0 edit by ToastyCL**
+**Creative Commons Attribution-ShareAlike 4.0 International — CC BY-SA 4.0**
 
-Released: **18 October 2026**
+Redistributions and modified versions should preserve the original project credits and applicable license information.
+
+See `LICENSE.txt` for the complete license terms.
+
+---
+
+## Project Philosophy
+
+OmniViewCTF - Caster Edition UA is intended to improve the presentation of competitive Unreal Tournament 99 CTF without changing the game itself.
+
+> Give spectators and casters more useful information while keeping the match itself at the center of the screen.
+
+---
+
+**OmniViewCTF - Caster Edition UA v2.0**  
+**Caster Edition development by ToastyCL**  
+**Unreal Arena branded edition**  
+**Unreal Tournament 99**
