@@ -1,5 +1,20 @@
 # Changelog
 
+## v2.0-ua - Unreal Arena Edition
+Validated stable Unreal Arena branded build of Caster Edition v2.0.
+
+### Unreal Arena edition
+- Separate package namespace: `OmniViewCTF_CasterED_UA`
+- Can coexist with the neutral `OmniViewCTF_CasterED` package
+- Unreal Arena logo restored and enabled by default
+- Independent `.ini` and `.int` files
+- Independent Mods menu entry
+- No AutoStart
+- Includes the same Caster Edition v2.0 feature set
+- Player Cam uses the UT99-compatible Pawn rotation fallback for remotely locked players
+- Clean UCC validation: `Success - 0 error(s), 0 warnings`
+- Successfully tested in Unreal Tournament 99
+
 ## v2.0 - Caster Edition
 Edit by **ToastyCL**.
 
