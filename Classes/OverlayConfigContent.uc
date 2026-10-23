@@ -633,6 +633,33 @@ function SetPlayerCamKey(int KeyNo, string KeyName)
   }
 }
 
+function SetViewToggleKey(int KeyNo, string KeyName)
+{
+  local int i;
+  local string TempBind, ScanKey;
+
+  TempBind = GetPlayerOwner().ConsoleCommand("KEYBINDING " $ KeyName);
+  TempBind = StrReplace(TempBind,"|uatoggleview","");
+  GetPlayerOwner().ConsoleCommand("SET Input " $ KeyName @ TempBind $ "|uatoggleview");
+  ViewToggleKeyButton.SetText(KeyName);
+
+  for (i = 0; i < 255; i++)
+  {
+    ScanKey = RealKeyName[i];
+    if (i == KeyNo || ScanKey == "")
+      continue;
+
+    TempBind = GetPlayerOwner().ConsoleCommand("KEYBINDING " $ ScanKey);
+    if (Contains(TempBind,"|UATOGGLEVIEW"))
+    {
+      TempBind = StrReplace(TempBind,"|uatoggleview","");
+      GetPlayerOwner().ConsoleCommand("SET Input " $ ScanKey @ TempBind);
+    }
+    if (Caps(TempBind) == "UATOGGLEVIEW")
+      GetPlayerOwner().ConsoleCommand("SET Input " $ ScanKey);
+  }
+}
+
 function bool Contains(string str, string check)
 {
   if (InStr(Caps(str), Caps(check)) > -1)
