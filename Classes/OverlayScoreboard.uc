@@ -443,14 +443,14 @@ function DrawTeamPanel(Canvas Canvas, byte Team, float StartX, float StartY, flo
   Canvas.DrawColor = SetColor(102,166,255);
 
   if (Team == 0)
-  DrawTextLeft(Canvas, "RED (" $ string(PlayerCount) $ ")  PLAYER", NameX, HeaderTextY, false, true);
+  DrawTextLeft(Canvas, "RED (" $ string(PlayerCount) $ ")", NameX, HeaderTextY, false, true);
   else
-  DrawTextLeft(Canvas, "BLUE (" $ string(PlayerCount) $ ") PLAYER", NameX, HeaderTextY, false, true);
+  DrawTextLeft(Canvas, "BLUE (" $ string(PlayerCount) $ ")", NameX, HeaderTextY, false, true);
 
   Canvas.DrawColor = SetColor(176,182,190);
   DrawTextRight(Canvas, "CAP", CapsX, HeaderTextY, false, true);
   DrawTextRight(Canvas, "GRB", GrabsX, HeaderTextY, false, true);
-  DrawTextRight(Canvas, "FCK", FCKillsX, HeaderTextY, false, true);
+  DrawTextRight(Canvas, "FK", FCKillsX, HeaderTextY, false, true);
   DrawTextRight(Canvas, "COV", CoversX, HeaderTextY, false, true);
   DrawTextRight(Canvas, "SEA", SealsX, HeaderTextY, false, true);
   DrawTextRight(Canvas, "FRG", FragsX, HeaderTextY, false, true);
