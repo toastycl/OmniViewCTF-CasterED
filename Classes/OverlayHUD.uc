@@ -3,7 +3,7 @@ class OverlayHUD extends ChallengeCTFHUD;
 #exec TEXTURE IMPORT FILE=Textures\white_1x1.pcx NAME=white_1x1 MIPS=Off
 #exec TEXTURE IMPORT FILE=Textures\amp_icon.pcx NAME=amp_icon MIPS=Off FLAGS=2
 #exec TEXTURE IMPORT FILE=Textures\armor_icon.bmp NAME=armor_icon MIPS=Off FLAGS=2
-#exec TEXTURE IMPORT FILE=Textures\belt_icon.pcx mp NAME=belt_icon MIPS=Off FLAGS=2
+#exec TEXTURE IMPORT FILE=Textures\belt_icon.pcx NAME=belt_icon MIPS=Off FLAGS=2
 #exec TEXTURE IMPORT FILE=Textures\pads_icon.pcx NAME=pads_icon MIPS=Off FLAGS=2
 #exec TEXTURE IMPORT FILE=Textures\health_icon.pcx NAME=health_icon MIPS=Off FLAGS=2
 #exec TEXTURE IMPORT FILE=Textures\boots_icon.pcx NAME=boots_icon MIPS=Off FLAGS=2
@@ -328,6 +328,17 @@ exec function uaplayercam()
   UAPlayerCamAlpha = 0.0;
   bUAPlayerCamClosing = false;
   bUAPlayerCamActive = true;
+}
+
+exec function uatoggleview()
+{
+  if (PlayerOwner == None)
+    return;
+
+  if (PlayerOwner.bBehindView)
+    PlayerOwner.ConsoleCommand("BehindView 0");
+  else
+    PlayerOwner.ConsoleCommand("BehindView 1");
 }
 
 exec function showovo()
@@ -3118,15 +3129,16 @@ simulated function DrawUASpectatorStatus(Canvas Canvas)
   local float LabelX, NameX, NameMaxW, StatsX, Gap, DividerX, StateX, StateReserve;
   local string PName, RawName, TeamText, HPValue, ArmorValue, NameBlock, AmpText;
   local color Accent;
-  local bool bFollowing, bObservedFC, bObservedAMP;
+  local bool bFollowing, bObservedFC, bObservedAMP, bObservedBoots;
   local int NameChars;
+  local Inventory BootsInv;
 
   // UT99 fonts are fixed-pixel. Keep normal layouts at 1.0 and only enlarge
   // slightly on high-resolution canvases so geometry and text stay coherent.
   if (Canvas.ClipX >= 2200 || Canvas.ClipY >= 1200)
-    UIScale = 1.20;
+    UIScale = 1.80;
   else
-    UIScale = 1.00;
+    UIScale = 1.50;
 
   bFollowing = (PawnOwner != PlayerOwner && PawnOwner.PlayerReplicationInfo != None && !PawnOwner.PlayerReplicationInfo.bIsSpectator);
 
@@ -3188,6 +3200,15 @@ simulated function DrawUASpectatorStatus(Canvas Canvas)
 
   bObservedFC = (class'OverlaySettings'.default.bFC_Info && PawnOwner.PlayerReplicationInfo.HasFlag != None && !IsInWarmup());
   bObservedAMP = (class'OverlaySettings'.default.iAmpEffects != 0 && PawnOwner.PlayerReplicationInfo.TimeAcc != -1);
+  bObservedBoots = false;
+  for (BootsInv = PawnOwner.Inventory; BootsInv != None; BootsInv = BootsInv.Inventory)
+  {
+    if (BootsInv.IsA('UT_JumpBoots'))
+    {
+      bObservedBoots = true;
+      break;
+    }
+  }
 
   // Responsive width with a safe margin on narrow 4:3 / low-res canvases.
   BoxW = 510 * UIScale;
@@ -3224,6 +3245,8 @@ simulated function DrawUASpectatorStatus(Canvas Canvas)
     AmpText = "AMP " $ string(Max(0, PawnOwner.PlayerReplicationInfo.TimeAcc));
     StateReserve += 58 * UIScale;
   }
+  if (bObservedBoots)
+    StateReserve += 54 * UIScale;
   StateX = DividerX - StateReserve;
 
   // Removed the old vertical divider here because in-game it could read as
@@ -3284,6 +3307,15 @@ simulated function DrawUASpectatorStatus(Canvas Canvas)
     Canvas.Font = Font469_16b;
     Canvas.SetPos(StateX + 4 * UIScale, BoxY + 10 * UIScale);
     Canvas.DrawText(AmpText, False);
+    StateX += 58 * UIScale;
+  }
+
+  if (bObservedBoots)
+  {
+    Canvas.DrawColor = SetColor(118,196,232);
+    Canvas.Font = Font469_16b;
+    Canvas.SetPos(StateX + 4 * UIScale, BoxY + 10 * UIScale);
+    Canvas.DrawText("BOOTS", False);
   }
 
   HPValue = string(Max(0, PawnOwner.Health));
@@ -3359,9 +3391,7 @@ function DrawUAPlayerCam(Canvas Canvas)
   local Pawn P;
   local vector CamLocation;
   local rotator CamRotation;
-  local float W, H, X, Y, HeaderH, SlideY, XL, YL;
-  local color Accent;
-  local string PlayerName;
+  local float W, H, X, Y, SlideY, CrossX, CrossY;
   local bool bOldHidden;
 
   if ((!bUAPlayerCamActive && !bUAPlayerCamClosing) || UAPlayerCamAlpha <= 0.0)
@@ -3379,20 +3409,18 @@ function DrawUAPlayerCam(Canvas Canvas)
   // Extra-large responsive 16:9 Player Cam.
   // It grows upward from the lower-left lane while preserving a safety zone
   // above the spectator bar / timers so existing HUD elements are untouched.
-  W = Canvas.ClipX * 0.38;
-  if (W < 340)
-    W = 340;
-  if (W > 600)
-    W = 600;
+  W = Canvas.ClipX * 0.437;
+  if (W < 391)
+    W = 391;
+  if (W > 690)
+    W = 690;
 
   H = W * 0.5625;
-  HeaderH = 22;
-
   X = 12;
 
   // Reserve the full lower-HUD lane used by Spectating/HP/Armor and timers.
   // Player Cam sits above that area instead of overlapping it.
-  Y = Canvas.ClipY - H - 148;
+  Y = Canvas.ClipY - H - 190;
 
   // Avoid climbing into the compact scoreboard on low resolutions.
   if (Y < 150)
@@ -3431,10 +3459,10 @@ function DrawUAPlayerCam(Canvas Canvas)
   // Use the local spectator as the portal camera actor instead of the target Pawn.
   // The explicit location/rotation still follows the locked player.
   Canvas.DrawPortal(
-    int(X + 2),
-    int(Y + HeaderH),
-    int(W - 4),
-    int(H - HeaderH - 2),
+    int(X),
+    int(Y),
+    int(W),
+    int(H),
     PlayerOwner,
     CamLocation,
     CamRotation,
@@ -3444,46 +3472,24 @@ function DrawUAPlayerCam(Canvas Canvas)
 
   P.bHidden = bOldHidden;
 
-  Canvas.Style = ERenderStyle.STY_Translucent;
-  Canvas.DrawColor = SetColor(4,4,4);
-  Canvas.SetPos(X, Y);
-  Canvas.DrawRect(Texture'white_1x1', W, HeaderH);
-
-  if (UAPlayerCamPRI.Team == 0)
-    Accent = SetColor(205,45,45);
-  else
-    Accent = SetColor(55,115,235);
+  // Frameless Player Cam: only a compact crosshair remains over the portal.
+  CrossX = X + W * 0.5;
+  CrossY = Y + H * 0.5;
 
   Canvas.Style = ERenderStyle.STY_Normal;
-  Canvas.DrawColor = Accent;
 
-  // Team rail: top and left only, keeping the picture itself unobstructed.
-  Canvas.SetPos(X, Y);
-  Canvas.DrawRect(Texture'white_1x1', W, 2);
-  Canvas.SetPos(X, Y);
-  Canvas.DrawRect(Texture'white_1x1', 2, H);
+  // 1 px dark shadow keeps the reticle readable on bright maps.
+  Canvas.DrawColor = SetColor(0,0,0);
+  Canvas.SetPos(CrossX - 8, CrossY);
+  Canvas.DrawRect(Texture'white_1x1', 17, 2);
+  Canvas.SetPos(CrossX, CrossY - 8);
+  Canvas.DrawRect(Texture'white_1x1', 2, 17);
 
-  Canvas.Font = Font469_16b;
-  Canvas.DrawColor = SetColor(218,190,120);
-  Canvas.SetPos(X + 9, Y + 4);
-  Canvas.DrawText("PLAYER CAM", False);
-
-  PlayerName = UAPlayerCamPRI.PlayerName;
-  Canvas.Font = Font469_16;
-  Canvas.DrawColor = Accent;
-  Canvas.StrLen(PlayerName, XL, YL);
-
-  // Fit very long names inside the camera header.
-  while (XL > W - 118 && Len(PlayerName) > 5)
-  {
-    PlayerName = Left(PlayerName, Len(PlayerName)-1);
-    Canvas.StrLen(PlayerName$"..", XL, YL);
-  }
-  if (PlayerName != UAPlayerCamPRI.PlayerName)
-    PlayerName = PlayerName$"..";
-
-  Canvas.SetPos(X + W - XL - 9, Y + 4);
-  Canvas.DrawText(PlayerName, False);
+  Canvas.DrawColor = SetColor(235,235,235);
+  Canvas.SetPos(CrossX - 7, CrossY);
+  Canvas.DrawRect(Texture'white_1x1', 15, 1);
+  Canvas.SetPos(CrossX, CrossY - 7);
+  Canvas.DrawRect(Texture'white_1x1', 1, 15);
 }
 
 function string GetUATimerLabel(Inventory P)
@@ -3584,9 +3590,9 @@ function DrawItemTimer (Canvas Canvas) // UA compact responsive horizontal spect
   // Match the status bar: fixed readable geometry at normal resolutions,
   // slightly larger on high-resolution displays.
   if (Canvas.ClipX >= 2200 || Canvas.ClipY >= 1200)
-    UIScale = 1.20;
+    UIScale = 1.80;
   else
-    UIScale = 1.00;
+    UIScale = 1.50;
 
   ItemCount = 0;
 
