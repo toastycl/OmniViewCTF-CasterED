@@ -15,7 +15,6 @@ struct PlayerStats
     var int Covers;
     var int Seals;
     var int Frags;
-    var int Accuracy;
     var int Efficiency;
     var int Score;
     var bool gotAmp;
@@ -23,8 +22,8 @@ struct PlayerStats
     var Pawn PlayerOwner;
 };
 
-var PlayerStats RedPlayer[5];
-var PlayerStats BluePlayer[5];
+var PlayerStats RedPlayer[16];
+var PlayerStats BluePlayer[16];
 var OverlayHUD OH;
 var Canvas CanvasX;
 var Font Font469_16, Font469_16b, Font469_18b;
@@ -70,7 +69,7 @@ function SortScores(int N,byte Team)
 {
   local int i,j,Max;
   local PlayerStats TempStats;
-  local PlayerStats Ordered[5];
+  local PlayerStats Ordered[16];
 
   for (i = 0; i < N; i++)
   {
@@ -102,9 +101,16 @@ function SortScores(int N,byte Team)
 
 // create usable player IDs //
 
+function int GetUATeamPlayerCount(byte Team)
+{
+  if (Team == 0)
+    return redPlayerCount;
+  return bluePlayerCount;
+}
+
 function PlayerReplicationInfo GetUAPlayerPRI(byte Team, int Index)
 {
-  if (Index < 0 || Index >= 5)
+  if (Index < 0 || Index >= 16)
     return None;
 
   if (Team == 0)
@@ -115,7 +121,7 @@ function PlayerReplicationInfo GetUAPlayerPRI(byte Team, int Index)
 
 function int GetUAPlayerCaps(byte Team, int Index)
 {
-  if (Index < 0 || Index >= 5)
+  if (Index < 0 || Index >= 16)
     return 0;
 
   if (Team == 0)
@@ -128,7 +134,7 @@ function int GetUAPlayerCaps(byte Team, int Index)
 // Keep PlayerStats inside this class to avoid UT99's 255-byte cross-class limit.
 function string GetUAPlayerName(byte Team, int Index)
 {
-  if (Index < 0 || Index >= 5)
+  if (Index < 0 || Index >= 16)
     return "";
 
   if (Team == 0)
@@ -139,7 +145,7 @@ function string GetUAPlayerName(byte Team, int Index)
 
 function int GetUAPlayerStat(byte Team, int Index, int StatID)
 {
-  if (Index < 0 || Index >= 5)
+  if (Index < 0 || Index >= 16)
     return 0;
 
   if (Team == 0)
@@ -168,11 +174,11 @@ function INT realPlayerID(int ID)
 {
   local int j;
 
-  for (j = 0; j < 5; j++)
+  for (j = 0; j < 16; j++)
     if (ID == redPlayer[j].PlayerNumber)
     return redPlayer[j].PRI.PlayerID;
 
-  for (j = 0; j < 5; j++)
+  for (j = 0; j < 16; j++)
     if (ID == bluePlayer[j].PlayerNumber)
     return bluePlayer[j].PRI.PlayerID;
 
@@ -186,13 +192,13 @@ function PlayerStats findStatByPRI(PlayerReplicationInfo PRI)
 
   if (PRI.Team == 0 )
   {
-  for (j = 0; j < 5; j++)
+  for (j = 0; j < 16; j++)
     if (PRI == redPlayer[j].PRI)
     return redPlayer[j];
   }
   else
   {
-  for (j = 0; j < 5; j++)
+  for (j = 0; j < 16; j++)
     if (PRI == bluePlayer[j].PRI)
     return bluePlayer[j];
   }
@@ -204,11 +210,15 @@ function UpdatePlayerStats(byte Team, ReplicationInfo RI, PlayerReplicationInfo 
 {
   if (Team == 0)
   {
+    if (redPlayerCount >= 16)
+      return;
     RedPlayer[redPlayerCount] = getPlayerData(RI,PRI,cID);
     redPlayerCount++;
   }
   else
   {
+    if (bluePlayerCount >= 16)
+      return;
     BluePlayer[bluePlayerCount] = getPlayerData(RI,PRI,cID);
     bluePlayerCount++;
   }
@@ -246,36 +256,6 @@ function int GetSmartCTFStat(ReplicationInfo RI, string PrimaryName, optional st
   return 0;
 }
 
-function int GetUTSAccuracy(PlayerReplicationInfo PRI)
-{
-  local ReplicationInfo UTSRI;
-  local Pawn UTSOwner;
-  local int Shots, Hits;
-
-  if (PRI == None)
-    return -1;
-
-  foreach Level.AllActors(class'ReplicationInfo', UTSRI)
-  {
-    if (!OH.Contains(string(UTSRI.Class),"UTSReplicationInfo"))
-      continue;
-
-    UTSOwner = Pawn(UTSRI.Owner);
-    if (UTSOwner == None || UTSOwner.PlayerReplicationInfo != PRI)
-      continue;
-
-    Shots = int(UTSRI.GetPropertyText("zzShotCount"));
-    Hits = int(UTSRI.GetPropertyText("zzHitCount"));
-
-    if (Shots <= 0)
-      return 0;
-
-    return int((float(Hits) / float(Shots)) * 100.0);
-  }
-
-  return -1;
-}
-
 function PlayerStats GetPlayerData(ReplicationInfo RI, PlayerReplicationInfo PRI,int cID)
 {
   local PlayerStats TempStats;
@@ -304,7 +284,6 @@ function PlayerStats GetPlayerData(ReplicationInfo RI, PlayerReplicationInfo PRI
   // Keep fallbacks so the Unreal Arena build remains compatible across variants.
   TempStats.Seals = GetSmartCTFStat(RI, "Seals", "Seal", "SealKills", "FlagSeals");
   TempStats.Frags =  int(RI.GetPropertyText("Frags"));
-  TempStats.Accuracy = GetUTSAccuracy(PRI);
 
   if (TempStats.Frags + PRI.Deaths == 0)
   TempStats.Efficiency =  0;
@@ -342,7 +321,7 @@ simulated function Timer()
 {
   local int j;
 
-  for (j = 0; j < 5; j++)
+  for (j = 0; j < 16; j++)
   {
     if (bluePlayer[j].PRI != none )
     {
@@ -408,7 +387,7 @@ function DrawTeamPanel(Canvas Canvas, byte Team, float StartX, float StartY, flo
 {
   local int j, PlayerCount;
   local float CurY, RowHeight, PanelWidth;
-  local float NameX, CapsX, GrabsX, FCKillsX, CoversX, SealsX, FragsX, AccX, EffX;
+  local float NameX, CapsX, GrabsX, FCKillsX, CoversX, SealsX, FragsX, EffX;
   local float TextW, TextH, HeaderTextY, RowTextY;
   local PlayerStats CurrentPlayer;
   local bool bSpectated;
@@ -431,9 +410,8 @@ function DrawTeamPanel(Canvas Canvas, byte Team, float StartX, float StartY, flo
   FCKillsX = StartX + 325 * ResScale;
   CoversX = StartX + 385 * ResScale;
   SealsX = StartX + 435 * ResScale;
-  FragsX = StartX + 482 * ResScale;
-  AccX = StartX + 526 * ResScale;
-  EffX = StartX + 568 * ResScale;
+  FragsX = StartX + 490 * ResScale;
+  EffX = StartX + 558 * ResScale;
 
   if (Team == 0)
   PlayerCount = redPlayerCount;
@@ -487,8 +465,6 @@ function DrawTeamPanel(Canvas Canvas, byte Team, float StartX, float StartY, flo
   DrawTextRight(Canvas, "COV", CoversX, HeaderTextY, false, true);
   DrawTextRight(Canvas, "SEA", SealsX, HeaderTextY, false, true);
   DrawTextRight(Canvas, "FRG", FragsX, HeaderTextY, false, true);
-  if (class'OverlaySettings'.default.bShowAccuracy)
-    DrawTextRight(Canvas, "ACC", AccX, HeaderTextY, false, true);
   DrawTextRight(Canvas, "EFF", EffX, HeaderTextY, false, true);
 
   // Quiet separator: helps distinguish labels from live rows without adding height.
@@ -620,15 +596,6 @@ function DrawTeamPanel(Canvas Canvas, byte Team, float StartX, float StartY, flo
 
     Canvas.DrawColor = SetColor(218,222,228);
     DrawTextRight(Canvas, string(CurrentPlayer.Frags), FragsX, RowTextY, false, true);
-
-    if (class'OverlaySettings'.default.bShowAccuracy)
-    {
-      Canvas.DrawColor = SetColor(180,205,230);
-      if (CurrentPlayer.Accuracy < 0)
-        DrawTextRight(Canvas, "--", AccX, RowTextY, false, true);
-      else
-        DrawTextRight(Canvas, string(CurrentPlayer.Accuracy)$"%", AccX, RowTextY, false, true);
-    }
 
     // Efficiency is the only metric with semantic color coding.
     if (CurrentPlayer.Efficiency >= 60)
