@@ -794,6 +794,15 @@ function Notify(UWindowDialogControl C, byte E)
             DisplayInfo();
           }
         break;
+
+        case ViewToggleKeyButton:
+          if(ViewToggleKeyButton != none)
+          {
+            bViewToggleKey = true;
+            ViewToggleKeyButton.bDisabled = true;
+            DisplayInfo();
+          }
+        break;
       }
       break;
 
