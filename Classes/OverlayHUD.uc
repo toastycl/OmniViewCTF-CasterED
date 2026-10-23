@@ -3164,9 +3164,9 @@ simulated function DrawUASpectatorStatus(Canvas Canvas)
   // UT99 fonts are fixed-pixel. Keep normal layouts at 1.0 and only enlarge
   // slightly on high-resolution canvases so geometry and text stay coherent.
   if (Canvas.ClipX >= 2200 || Canvas.ClipY >= 1200)
-    UIScale = 1.80;
+    UIScale = 1.62;
   else
-    UIScale = 1.50;
+    UIScale = 1.35;
 
   bFollowing = (PawnOwner != PlayerOwner && PawnOwner.PlayerReplicationInfo != None && !PawnOwner.PlayerReplicationInfo.bIsSpectator);
 
@@ -3653,9 +3653,9 @@ function DrawItemTimer (Canvas Canvas) // UA compact responsive horizontal spect
   // Match the status bar: fixed readable geometry at normal resolutions,
   // slightly larger on high-resolution displays.
   if (Canvas.ClipX >= 2200 || Canvas.ClipY >= 1200)
-    UIScale = 1.80;
+    UIScale = 1.62;
   else
-    UIScale = 1.50;
+    UIScale = 1.35;
 
   ItemCount = 0;
 
