@@ -1957,7 +1957,7 @@ function DrawKillFeed(Canvas canvas)
 function DrawChat(Canvas Canvas)
 {
   local float OldOriginX;
-  local float XL, YL, YPos, ChatTop, BottomMargin, TotalLines;
+  local float XL, YL, YPos, ChatTop, TotalLines, ResScale, ScoreRowH;
   local int i, j, k;
 
   OldOriginX = Canvas.OrgX;
@@ -2010,13 +2010,38 @@ function DrawChat(Canvas Canvas)
     }
   }
 
-  BottomMargin = 10;
-  if ( PlayerOwner != None && PlayerOwner.Player != None && PlayerOwner.Player.Console.bTyping )
-    BottomMargin = 34;
+  // Mirror the kill feed placement: chat begins directly below the RED
+  // scoreboard while the kill feed begins below BLUE.
+  if ( (Canvas.ClipX < 2250 && Canvas.ClipX >= 1750) || (Canvas.ClipY < 1150 && Canvas.ClipY >= 900) )
+    ResScale = 0.75;
+  else if ( Canvas.ClipX < 1750 || Canvas.ClipY < 900 )
+    ResScale = 0.5;
+  else
+    ResScale = 1.0;
 
-  ChatTop = Canvas.ClipY - BottomMargin - (YL * TotalLines);
-  if ( ChatTop < Canvas.ClipY * 0.55 )
-    ChatTop = Canvas.ClipY * 0.55;
+  if ( class'OverlaySettings'.default.bScoreBoardState )
+  {
+    // Match OverlayScoreboard/DrawKillFeed measured row height exactly.
+    Canvas.Font = Font469_16;
+    Canvas.StrLen("Ag", XL, YL);
+    ScoreRowH = 19 * ResScale;
+    if (ScoreRowH < YL + 4)
+      ScoreRowH = YL + 4;
+
+    ChatTop = (12 * ResScale) + (ScoreRowH * 6);
+  }
+  else
+    ChatTop = 2;
+
+  // Restore the configured chat font after scoreboard measurement.
+  if ( class'OverlaySettings'.default.iFontSizeChat == 2)
+    Canvas.Font = Font469_20;
+  else if ( class'OverlaySettings'.default.iFontSizeChat == 1)
+    Canvas.Font = Font469_18;
+  else
+    Canvas.Font = Font469_16;
+
+  Canvas.StrLen("TEST", XL, YL);
 
   YPos = 0;
   for (i=0; i<4; i++)
