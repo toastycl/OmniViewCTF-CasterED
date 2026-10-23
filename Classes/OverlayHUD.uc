@@ -3155,10 +3155,10 @@ simulated function DrawUASpectatorStatus(Canvas Canvas)
   local float BoxW, BoxH, BoxX, BoxY, XL, YL, UIScale, TimerReserve, IconSize;
   local float LabelX, NameX, NameMaxW, StatsX, Gap, DividerX, StateX, StateReserve;
   local float TextY, IconY, LeftPad, RightPad, CenterStart, CenterWidth;
-  local string PName, RawName, TeamText, HPValue, ArmorValue, NameBlock, AmpText;
+  local string PName, RawName, TeamText, HPValue, ArmorValue, NameBlock, AmpText, BootsText;
   local color Accent;
   local bool bFollowing, bObservedFC, bObservedAMP, bObservedBoots;
-  local int NameChars;
+  local int NameChars, BootsCharge;
   local Inventory BootsInv;
 
   // UT99 fonts are fixed-pixel. Keep normal layouts at 1.0 and only enlarge
@@ -3229,11 +3229,20 @@ simulated function DrawUASpectatorStatus(Canvas Canvas)
   bObservedFC = (class'OverlaySettings'.default.bFC_Info && PawnOwner.PlayerReplicationInfo.HasFlag != None && !IsInWarmup());
   bObservedAMP = (class'OverlaySettings'.default.iAmpEffects != 0 && PawnOwner.PlayerReplicationInfo.TimeAcc != -1);
   bObservedBoots = false;
+  BootsCharge = 0;
+  BootsText = "Boots";
   for (BootsInv = PawnOwner.Inventory; BootsInv != None; BootsInv = BootsInv.Inventory)
   {
     if (BootsInv.IsA('UT_JumpBoots'))
     {
       bObservedBoots = true;
+      BootsCharge = Max(0, BootsInv.Charge);
+
+      // Charge is available on UT_JumpBoots when replicated. If the remote
+      // spectator does not receive a useful value, keep the safe presence-only label.
+      if (BootsCharge > 0)
+        BootsText = "Boots " $ string(BootsCharge);
+
       break;
     }
   }
@@ -3282,7 +3291,12 @@ simulated function DrawUASpectatorStatus(Canvas Canvas)
     StateReserve += 58 * UIScale;
   }
   if (bObservedBoots)
-    StateReserve += 54 * UIScale;
+  {
+    if (BootsCharge > 0)
+      StateReserve += 70 * UIScale;
+    else
+      StateReserve += 54 * UIScale;
+  }
   StateX = DividerX - StateReserve;
 
   // Removed the old vertical divider here because in-game it could read as
@@ -3353,9 +3367,9 @@ simulated function DrawUASpectatorStatus(Canvas Canvas)
   {
     Canvas.DrawColor = SetColor(118,196,232);
     Canvas.Font = Font469_16b;
-    Canvas.StrLen("BOOTS", XL, YL);
+    Canvas.StrLen(BootsText, XL, YL);
     Canvas.SetPos(StateX + 4 * UIScale, BoxY + (BoxH - YL) * 0.5);
-    Canvas.DrawText("BOOTS", False);
+    Canvas.DrawText(BootsText, False);
   }
 
   HPValue = string(Max(0, PawnOwner.Health));
