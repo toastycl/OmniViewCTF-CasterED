@@ -1,50 +1,55 @@
-# OmniViewCTF - Caster Edition v2.0
+# OmniViewCTF - Caster Edition v2.1
 
 OmniViewCTF - Caster Edition is a neutral broadcast-oriented fork of OmniViewCTF for Unreal Tournament 99 CTF.
 
-This version focuses on providing casters with a cleaner, more compact spectator HUD, additional broadcast tools, and configurable analysis panels, while keeping the original OmniView/SmartCTF information available.
+It focuses on giving casters a cleaner spectator HUD, compact live statistics, secondary camera tools, item timing information, and configurable broadcast controls while preserving the original OmniView / SmartCTF workflow.
 
 ---
 
 ## Version history
 
-### v2.0 - Caster Edition
+### v2.1 - Caster Edition
 Current release / edit by **ToastyCL**.
 
-Main goals of this version:
-- Neutral caster-focused presentation
-- No watermark or branding
-- New secondary Player Cam
-- Improved spectator HUD and scoreboard
-- Better timer and powerup information
-- Player Compare
-- MVP Focus
-- Last Capture information
-- Scrollable Options page
-- Manual Start / Stop only
+v2.1 focuses on broadcast polish, Player Cam usability, larger-team support, and improved HUD positioning.
+
+Highlights:
+- Frameless Player Cam with team-colored player name
+- Smaller centered Player Cam crosshair
+- Configurable main-view toggle for `BehindView 0 / 1`
+- Improved lower spectator HUD spacing and vertical alignment
+- Jump Boots status with remaining charge when available
+- Chat moved below the RED scoreboard
+- Kill feed remains below the BLUE scoreboard
+- Dedicated typing line so `Say:` never overlaps chat
+- Scoreboards support more than five players per team
+- `FK` label replaces `FCK`
+- Cleaner team headers without the redundant `PLAYER` label
+- Refined HUD / timer scaling
+
+### v2.0 - Caster Edition
+Introduced the neutral Caster Edition package with the compact scoreboard, Player Cam, Player Compare, MVP Focus, item timers, improved spectator HUD, Last Capture, and manual Start / Stop workflow.
 
 ### Previous fork
 **v1.1 rX edit**
-
-This Caster Edition keeps the fork history visible for traceability.
 
 ### Original project
 Original OmniView4CTF by **Waylander / double_u**.
 
 ---
 
-# What's new in v2.0
+# What's new in v2.1
 
 ## 1. Compact caster scoreboard
 
-The scoreboard was redesigned to remain visible without covering too much of the game.
+The RED and BLUE scoreboards remain visible in the upper corners without blocking the center of the game.
 
 Displayed statistics:
 - Player number
 - Player name
 - Caps
 - Grabs
-- FC Kills
+- Flag Kills (`FK`)
 - Covers
 - Seals
 - Frags
@@ -57,7 +62,11 @@ Additional visual information:
 - Team-based RED / BLUE accents
 - Efficiency color feedback
 
-The scoreboard is designed to scale correctly across common resolutions.
+### Larger teams
+
+v2.1 removes the previous five-player-per-team internal limit.
+
+The scoreboard now supports up to **16 players per team**, so 6v6 and larger team setups no longer repeat or lose players after the fifth slot.
 
 ---
 
@@ -70,155 +79,31 @@ When following a player, the lower HUD displays:
 - Armor
 - Flag Carrier status
 - AMP status
+- Jump Boots status
 
-When using Free Spect, the player-specific information is removed and the HUD switches to a cleaner Free Spect layout.
+The entire bar is vertically centered with consistent internal padding and spacing.
 
-The spectator HUD is responsive and was adjusted to avoid overlaps with timers and other interface elements.
+Compared with the first v2.1 test build, the final spectator bar and item timers were reduced by approximately 10% for a cleaner balance while retaining the larger, more readable v2.0+ presentation.
 
----
+### Jump Boots
 
-## 3. Smart item timers
+When the observed player has Jump Boots, OmniView displays:
 
-The timer area supports important pickups such as:
-- Damage Amplifier
-- Shield Belt
-- Armor
-- Thigh Pads
-- Boots
-- Keg
-- Invisibility
+`Boots`
 
-Timer states include:
-- `UP` when the pickup is available
-- Countdown while waiting for respawn
-- Visual warning when the item is close to respawning
+When the replicated charge value is available, it displays the remaining charge:
 
-### Multiple Shield Belts
+`Boots 3`  
+`Boots 2`  
+`Boots 1`
 
-If a map contains two Shield Belts, they are both displayed as `BELT`, but the timer accent identifies the side:
+If the remaining charge cannot be determined reliably, OmniView safely falls back to `Boots`.
 
-- Red accent = Belt closer to RED base
-- Blue accent = Belt closer to BLUE base
-- Gold / neutral = single or neutral Belt
-
-This keeps the timer area compact while still making duplicated Belts understandable.
+When using Free Spect, player-specific information is removed and the HUD switches to the cleaner Free Spect layout.
 
 ---
 
-## 4. Powerup ownership
-
-When OmniView can identify the owner reliably, the HUD can show who currently holds important powerups such as:
-- AMP
-- Shield Belt
-
-The system avoids displaying a player name when ownership cannot be confirmed.
-
----
-
-## 5. Last Capture
-
-After a capture, OmniView displays:
-
-`Last cap: PlayerName`
-
-The player name uses the appropriate team color.
-
-The information stays visible until the next capture.
-
-A short retry window is used because SmartCTF team score and player capture statistics may replicate on different ticks. This helps prevent incorrect `Unknown` capture information.
-
----
-
-## 6. MVP indicator
-
-During the final 60 seconds of a timed match, OmniView displays the current predicted:
-
-`MVP: PlayerName`
-
-The MVP calculation is designed around CTF contribution rather than frags alone.
-
-It uses:
-- Caps
-- Grabs
-- FC Kills
-- Covers
-- Seals
-- Frags
-- Efficiency
-
-This is a caster analysis feature and does not replace SmartCTF's official statistics.
-
----
-
-## 7. MVP Focus
-
-A configurable key opens the detailed MVP Focus panel.
-
-The panel shows:
-- Current MVP candidate
-- Team
-- Caps
-- Grabs
-- FC Kills
-- Covers
-- Seals
-- Frags
-- Efficiency
-- MVP Score contribution
-
-Press the same key again to close the panel.
-
-The panel uses a short broadcast-style transition when opening and closing.
-
-### Configuration
-
-Open:
-
-**Mod -> OmniViewCTF - Caster Edition**
-
-Then assign a key to:
-
-**MVP Focus key**
-
----
-
-## 8. Player Compare
-
-Player Compare allows the caster to compare two players without opening a full scoreboard.
-
-### How to use it
-
-1. Spectate the first player.
-2. Press the configured **Player Compare key**.
-3. That player becomes Player A.
-4. Change your normal spectator target.
-5. The newly spectated player becomes Player B.
-6. Press the Compare key again to close the panel.
-
-Compared statistics:
-- Caps
-- Grabs
-- FC Kills
-- Covers
-- Seals
-- Frags
-- Efficiency
-
-The panel uses the same transition style as MVP Focus.
-
-### Configuration
-
-Open:
-
-**Mod -> OmniViewCTF - Caster Edition**
-
-Assign a key to:
-
-**Player Compare key**
-
----
-
-## 9. Player Cam
+## 3. Player Cam
 
 Caster Edition includes an optional secondary Player Cam.
 
@@ -228,25 +113,36 @@ Caster Edition includes an optional secondary Player Cam.
 2. Press the configured **Player Cam key**.
 3. A secondary camera opens in the lower-left area.
 4. The camera locks to that player.
-5. You can change your main spectator view while the Player Cam remains locked.
+5. You can change your main spectator target while the Player Cam remains locked.
 6. Press the Player Cam key again to close it.
 
-While Player Cam is open, the regular chat is temporarily hidden in that area. Chat returns automatically when Player Cam closes.
+### v2.1 Player Cam improvements
 
-The Player Cam uses the player's eye position and rotation to provide a first-person-style POV.
+- Larger responsive 16:9 viewport
+- Frameless presentation
+- Team-colored player name in the upper-left corner
+- Smaller centered crosshair
+- Clean first-person-style POV
+- Positioned above the spectator bar and timers
+- Chat is temporarily hidden while Player Cam is active
 
-The current stable Player Cam uses the validated **BV0 XLARGE** layout:
-- Larger 16:9 window
-- Responsive sizing
-- Positioned above the lower spectator HUD
-- Does not move the main spectator camera
-- Does not overlap HP / Armor / FC / AMP / timers
+Player Cam uses Unreal Engine 1 `DrawPortal`. Depending on the renderer, first-person weapon rendering or some effects may differ from the normal playable first-person view.
 
-### Important note
+---
 
-Player Cam uses Unreal Engine 1 `DrawPortal`.
+## 4. Main spectator view toggle
 
-Depending on the renderer, first-person weapon rendering or some visual effects may differ from the normal playable first-person view.
+v2.1 adds a configurable **View toggle key**.
+
+Pressing the assigned key alternates the main spectator camera between:
+
+`BehindView 0`
+
+and
+
+`BehindView 1`
+
+This does not affect the secondary Player Cam.
 
 ### Configuration
 
@@ -254,35 +150,116 @@ Open:
 
 **Mod -> OmniViewCTF - Caster Edition**
 
-Assign a key to:
+Then assign a key to:
 
-**Player Cam key**
+**View toggle key**
 
 ---
 
-## 10. Floating player names
+## 5. Chat and kill feed layout
+
+The broadcast layout is now symmetrical around the team scoreboards:
+
+- Chat appears directly below the **RED** scoreboard
+- Kill feed appears directly below the **BLUE** scoreboard
+- Both automatically move down when more players are present
+- The `Say:` typing line has its own reserved row
+- Existing chat messages begin below the typing line and no longer overlap it
+- Player Cam temporarily hides chat while active
+
+This positioning adapts to the actual number of players shown in each team table.
+
+---
+
+## 6. Smart item timers
+
+The timer area supports:
+- Damage Amplifier
+- Shield Belt
+- Armor
+- Thigh Pads
+- Boots
+- Keg
+- Invisibility
+
+Timer states include:
+- `UP` when available
+- Countdown while waiting for respawn
+- Visual warning when close to respawning
+
+### Multiple Shield Belts
+
+If a map contains two Shield Belts, both use the compact `BELT` label while team-side accents identify their location.
+
+---
+
+## 7. Powerup ownership
+
+When OmniView can identify the owner reliably, the HUD can show who currently holds important powerups such as AMP and Shield Belt.
+
+The system avoids displaying an owner name when ownership cannot be confirmed.
+
+---
+
+## 8. Last Capture
+
+After a capture, OmniView displays:
+
+`Last cap: PlayerName`
+
+The player name uses the corresponding team color.
+
+A short retry window is used because SmartCTF team score and player capture statistics can replicate on different ticks.
+
+---
+
+## 9. MVP indicator and MVP Focus
+
+During the final 60 seconds of a timed match, OmniView can display the current predicted MVP.
+
+The CTF-oriented calculation uses:
+- Caps
+- Grabs
+- Flag Kills
+- Covers
+- Seals
+- Frags
+- Efficiency
+
+A configurable **MVP Focus key** opens the detailed MVP panel.
+
+This is a caster analysis feature and does not replace SmartCTF's official statistics.
+
+---
+
+## 10. Player Compare
+
+Player Compare lets the caster compare two players without opening a full scoreboard.
+
+### How to use it
+
+1. Spectate the first player.
+2. Press the configured **Player Compare key**.
+3. Change your normal spectator target.
+4. The new target becomes Player B.
+5. Press the Compare key again to close the panel.
+
+Compared statistics:
+- Caps
+- Grabs
+- Flag Kills
+- Covers
+- Seals
+- Frags
+- Efficiency
+
+---
+
+## 11. Floating player names
 
 Floating player names remain visible during spectator mode.
 
-Their presentation changes based on distance:
-- Close players: clearer / fuller name
-- Medium distance: more compact
-- Far distance: smaller and less intrusive
-
-Important states such as Flag Carrier and AMP remain visually identifiable.
-
----
-
-## 11. Chat and kill feed layout
-
-The interface was reorganized for casting:
-
-- Chat is located at the lower-left
-- Kill feed is positioned below the upper scoreboard
-- Center messages such as kills, sprees and objective messages are moved higher so they do not block the middle of the action
-- The `Say:` typing prompt is positioned below the scoreboard instead of overlapping it
-
-When Player Cam is active, it temporarily replaces the normal chat area.
+Their presentation adapts to distance while important states such as Flag Carrier and AMP remain identifiable.
 
 ---
 
@@ -292,24 +269,20 @@ Open:
 
 **Mod -> OmniViewCTF - Caster Edition**
 
-Configure at least the following:
+Configure:
 
-### Player Compare key
-Opens / closes Player Compare.
+- **Player Compare key**
+- **MVP Focus key**
+- **Player Cam key**
+- **View toggle key**
 
-### MVP Focus key
-Opens / closes MVP Focus.
-
-### Player Cam key
-Opens / closes Player Cam.
-
-Choose keys that do not conflict with your existing UT99 spectator controls.
+Choose keys that do not conflict with existing UT99 spectator controls.
 
 ---
 
 # Other useful settings
 
-Existing OmniView settings are still available, including:
+Existing OmniView settings remain available, including:
 - Scoreboard visibility
 - Player numbers
 - Player names
@@ -328,8 +301,6 @@ Existing OmniView settings are still available, including:
 
 Caster Edition does **not** use AutoStart.
 
-This is intentional so the package remains predictable across different caster setups and UT installations.
-
 Start and stop the HUD manually from:
 
 **Mod -> OmniViewCTF - Caster Edition -> Start / Stop**
@@ -338,36 +309,36 @@ Start and stop the HUD manually from:
 
 # Interface layout
 
-A typical Caster Edition layout looks like this:
+A typical v2.1 layout:
 
 ```text
-+---------------- RED TEAM --------+ +-------- BLUE TEAM ----------------+
-| # Player CAP GRB FCK COV SEA... | | # Player CAP GRB FCK COV SEA... |
-| ... | | ... |
-+----------------------------------+ +----------------------------------+
++---------------- RED TEAM ----------------+ +--------------- BLUE TEAM ---------------+
+| # RED (n) CAP GRB FK COV SEA FRG EFF    | | # BLUE (n) CAP GRB FK COV SEA FRG EFF  |
+| players...                               | | players...                              |
++------------------------------------------+ +------------------------------------------+
+ Chat / Say                                  Kill feed
 
- Match score / time
+                    Main game view
 
+ [Player Cam - optional]
 
- Main game view
-
-
- [Player Cam - optional] Last cap / MVP
-
-
- Spectating Player | HP | Armor | FC | AMP
- Item timers / powerups
+      Spectating Player | FC | AMP | Boots | HP | Armor
+                     Item timers
 ```
-
-The goal is to keep the game visible while still providing the caster with useful CTF information.
 
 ---
 
 # Files
 
+Runtime package:
 - `OmniViewCTF_CasterED.u`
 - `OmniViewCTF_CasterED.int`
 - `OmniViewCTF_CasterED.ini`
+
+Distribution documentation:
+- `README.md` - full GitHub documentation
+- `README_PACKAGE.txt` - compact README intended for the downloadable ZIP
+- `CHANGELOG.md`
 
 ---
 
@@ -388,8 +359,8 @@ Please keep the original credits and fork history when redistributing modified v
 
 ## Release
 
-**OmniViewCTF - Caster Edition v2.0**
+**OmniViewCTF - Caster Edition v2.1**
 
-**Caster Edition v2.0 edit by ToastyCL**
+**Caster Edition edit by ToastyCL**
 
-Released: **18 October 2026**
+Released: **23 October 2026**
