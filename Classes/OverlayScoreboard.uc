@@ -15,6 +15,7 @@ struct PlayerStats
     var int Covers;
     var int Seals;
     var int Frags;
+    var int Accuracy;
     var int Efficiency;
     var int Score;
     var bool gotAmp;
@@ -245,6 +246,36 @@ function int GetSmartCTFStat(ReplicationInfo RI, string PrimaryName, optional st
   return 0;
 }
 
+function int GetUTSAccuracy(PlayerReplicationInfo PRI)
+{
+  local ReplicationInfo UTSRI;
+  local Pawn UTSOwner;
+  local int Shots, Hits;
+
+  if (PRI == None)
+    return -1;
+
+  foreach Level.AllActors(class'ReplicationInfo', UTSRI)
+  {
+    if (!OH.Contains(string(UTSRI.Class),"UTSReplicationInfo"))
+      continue;
+
+    UTSOwner = Pawn(UTSRI.Owner);
+    if (UTSOwner == None || UTSOwner.PlayerReplicationInfo != PRI)
+      continue;
+
+    Shots = int(UTSRI.GetPropertyText("zzShotCount"));
+    Hits = int(UTSRI.GetPropertyText("zzHitCount"));
+
+    if (Shots <= 0)
+      return 0;
+
+    return int((float(Hits) / float(Shots)) * 100.0);
+  }
+
+  return -1;
+}
+
 function PlayerStats GetPlayerData(ReplicationInfo RI, PlayerReplicationInfo PRI,int cID)
 {
   local PlayerStats TempStats;
@@ -273,6 +304,7 @@ function PlayerStats GetPlayerData(ReplicationInfo RI, PlayerReplicationInfo PRI
   // Keep fallbacks so the Unreal Arena build remains compatible across variants.
   TempStats.Seals = GetSmartCTFStat(RI, "Seals", "Seal", "SealKills", "FlagSeals");
   TempStats.Frags =  int(RI.GetPropertyText("Frags"));
+  TempStats.Accuracy = GetUTSAccuracy(PRI);
 
   if (TempStats.Frags + PRI.Deaths == 0)
   TempStats.Efficiency =  0;
@@ -376,7 +408,7 @@ function DrawTeamPanel(Canvas Canvas, byte Team, float StartX, float StartY, flo
 {
   local int j, PlayerCount;
   local float CurY, RowHeight, PanelWidth;
-  local float NameX, CapsX, GrabsX, FCKillsX, CoversX, SealsX, FragsX, EffX;
+  local float NameX, CapsX, GrabsX, FCKillsX, CoversX, SealsX, FragsX, AccX, EffX;
   local float TextW, TextH, HeaderTextY, RowTextY;
   local PlayerStats CurrentPlayer;
   local bool bSpectated;
@@ -399,8 +431,9 @@ function DrawTeamPanel(Canvas Canvas, byte Team, float StartX, float StartY, flo
   FCKillsX = StartX + 325 * ResScale;
   CoversX = StartX + 385 * ResScale;
   SealsX = StartX + 435 * ResScale;
-  FragsX = StartX + 490 * ResScale;
-  EffX = StartX + 558 * ResScale;
+  FragsX = StartX + 482 * ResScale;
+  AccX = StartX + 526 * ResScale;
+  EffX = StartX + 568 * ResScale;
 
   if (Team == 0)
   PlayerCount = redPlayerCount;
@@ -454,6 +487,8 @@ function DrawTeamPanel(Canvas Canvas, byte Team, float StartX, float StartY, flo
   DrawTextRight(Canvas, "COV", CoversX, HeaderTextY, false, true);
   DrawTextRight(Canvas, "SEA", SealsX, HeaderTextY, false, true);
   DrawTextRight(Canvas, "FRG", FragsX, HeaderTextY, false, true);
+  if (class'OverlaySettings'.default.bShowAccuracy)
+    DrawTextRight(Canvas, "ACC", AccX, HeaderTextY, false, true);
   DrawTextRight(Canvas, "EFF", EffX, HeaderTextY, false, true);
 
   // Quiet separator: helps distinguish labels from live rows without adding height.
@@ -585,6 +620,15 @@ function DrawTeamPanel(Canvas Canvas, byte Team, float StartX, float StartY, flo
 
     Canvas.DrawColor = SetColor(218,222,228);
     DrawTextRight(Canvas, string(CurrentPlayer.Frags), FragsX, RowTextY, false, true);
+
+    if (class'OverlaySettings'.default.bShowAccuracy)
+    {
+      Canvas.DrawColor = SetColor(180,205,230);
+      if (CurrentPlayer.Accuracy < 0)
+        DrawTextRight(Canvas, "--", AccX, RowTextY, false, true);
+      else
+        DrawTextRight(Canvas, string(CurrentPlayer.Accuracy)$"%", AccX, RowTextY, false, true);
+    }
 
     // Efficiency is the only metric with semantic color coding.
     if (CurrentPlayer.Efficiency >= 60)
