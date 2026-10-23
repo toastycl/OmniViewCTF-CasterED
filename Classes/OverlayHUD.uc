@@ -2028,10 +2028,12 @@ function DrawChat(Canvas Canvas)
     if (ScoreRowH < YL + 4)
       ScoreRowH = YL + 4;
 
-    ChatTop = (12 * ResScale) + (ScoreRowH * 6);
+    // Reserve one permanent text-entry line immediately below RED scoreboard.
+    // DrawTypingPrompt uses this lane, while chat begins below it.
+    ChatTop = (12 * ResScale) + (ScoreRowH * 6) + YL + 10;
   }
   else
-    ChatTop = 2;
+    ChatTop = YL + 10;
 
   // Restore the configured chat font after scoreboard measurement.
   if ( class'OverlaySettings'.default.iFontSizeChat == 2)
