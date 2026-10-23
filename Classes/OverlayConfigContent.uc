@@ -14,6 +14,8 @@ var UMenuLabelControl MVPKeyBind;
 var UMenuLabelControl MVPKeyMenu;
 var UMenuLabelControl PlayerCamKeyBind;
 var UMenuLabelControl PlayerCamKeyMenu;
+var UMenuLabelControl ViewToggleKeyBind;
+var UMenuLabelControl ViewToggleKeyMenu;
 var UMenuLabelControl Line;
 
 var UWindowCheckbox ItemTimer;
@@ -38,6 +40,7 @@ var UMenuRaisedButton HotKeyButton;
 var UMenuRaisedButton CompareKeyButton;
 var UMenuRaisedButton MVPKeyButton;
 var UMenuRaisedButton PlayerCamKeyButton;
+var UMenuRaisedButton ViewToggleKeyButton;
 var UWindowSmallButton OverlayButton;
 var UWindowSmallCloseButton CancelButton;
 
@@ -45,12 +48,14 @@ var bool bMenu;
 var bool bCompareKey;
 var bool bMVPKey;
 var bool bPlayerCamKey;
+var bool bViewToggleKey;
 
 var string RealKeyName[255];
 var string OldMenuKey;
 var string OldCompareKey;
 var string OldMVPKey;
 var string OldPlayerCamKey;
+var string OldViewToggleKey;
 
 var overlayhud OHUD;
 
@@ -276,6 +281,26 @@ function Created()
   PlayerCamKeyBind = UMenuLabelControl(CreateControl(class'UMenuLabelControl', 180.0, CurY + 2, 55.0, 1.0));
   PlayerCamKeyBind.SetText("");
   PlayerCamKeyBind.SetFont(1);
+  Cury = Cury + 24;
+
+  ViewToggleKeyMenu = UMenuLabelControl(CreateControl(class'UMenuLabelControl', 10.0, CurY + 2, 180.0, 1.0));
+  ViewToggleKeyMenu.SetText("View toggle key");
+  ViewToggleKeyMenu.SetHelpText("Toggle the main spectator view between BehindView 0 and BehindView 1.");
+  ViewToggleKeyMenu.SetFont(F_Normal);
+
+  ViewToggleKeyButton = UMenuRaisedButton(CreateControl(class'UMenuRaisedButton', 140.0, CurY - 2, 80.0, 1.0));
+  ViewToggleKeyButton.SetHelpText("Press, then choose a key.");
+  ViewToggleKeyButton.Align = TA_Center;
+  ViewToggleKeyButton.bDisabled = false;
+  ViewToggleKeyButton.bAcceptsFocus = false;
+  ViewToggleKeyButton.bIgnoreLDoubleClick = true;
+  ViewToggleKeyButton.bIgnoreMDoubleClick = true;
+  ViewToggleKeyButton.bIgnoreRDoubleClick = true;
+  ViewToggleKeyButton.NotifyWindow = Self;
+
+  ViewToggleKeyBind = UMenuLabelControl(CreateControl(class'UMenuLabelControl', 180.0, CurY + 2, 55.0, 1.0));
+  ViewToggleKeyBind.SetText("");
+  ViewToggleKeyBind.SetFont(1);
   Cury = Cury + 30;
 
   //// options for on screen score board ////
@@ -413,6 +438,12 @@ function LoadExistingKeys()
         PlayerCamKeyButton.SetText(KeyName);
         OldPlayerCamKey = KeyName;
       }
+
+      if(Contains(Alias,"|uatoggleview") )
+      {
+        ViewToggleKeyButton.SetText(KeyName);
+        OldViewToggleKey = KeyName;
+      }
     }
   }
   return;
@@ -428,6 +459,8 @@ function DisplayInfo()
     MVPKeyBind.SetText("...");
   if(!PlayerCamKeyButton.bDisabled)
     PlayerCamKeyBind.SetText("...");
+  if(!ViewToggleKeyButton.bDisabled)
+    ViewToggleKeyBind.SetText("...");
   return;
 }
 
@@ -438,14 +471,17 @@ function KeyDown(int Key, float X, float Y)
   bCompareKey = false;
   bMVPKey = false;
   bPlayerCamKey = false;
+  bViewToggleKey = false;
   HotKeyButton.bDisabled = false;
   CompareKeyButton.bDisabled = false;
   MVPKeyButton.bDisabled = false;
   PlayerCamKeyButton.bDisabled = false;
+  ViewToggleKeyButton.bDisabled = false;
   HotKeyBind.SetText("");
   CompareKeyBind.SetText("");
   MVPKeyBind.SetText("");
   PlayerCamKeyBind.SetText("");
+  ViewToggleKeyBind.SetText("");
 }
 
 function ProcessKey(int KeyNo, string KeyName)
@@ -475,6 +511,11 @@ function ProcessKey(int KeyNo, string KeyName)
   if(bPlayerCamKey)
   {
     SetPlayerCamKey(KeyNo, KeyName);
+    return;
+  }
+  if(bViewToggleKey)
+  {
+    SetViewToggleKey(KeyNo, KeyName);
     return;
   }
   return;
@@ -588,6 +629,33 @@ function SetPlayerCamKey(int KeyNo, string KeyName)
       GetPlayerOwner().ConsoleCommand("SET Input " $ ScanKey @ TempBind);
     }
     if (Caps(TempBind) == "UAPLAYERCAM")
+      GetPlayerOwner().ConsoleCommand("SET Input " $ ScanKey);
+  }
+}
+
+function SetViewToggleKey(int KeyNo, string KeyName)
+{
+  local int i;
+  local string TempBind, ScanKey;
+
+  TempBind = GetPlayerOwner().ConsoleCommand("KEYBINDING " $ KeyName);
+  TempBind = StrReplace(TempBind,"|uatoggleview","");
+  GetPlayerOwner().ConsoleCommand("SET Input " $ KeyName @ TempBind $ "|uatoggleview");
+  ViewToggleKeyButton.SetText(KeyName);
+
+  for (i = 0; i < 255; i++)
+  {
+    ScanKey = RealKeyName[i];
+    if (i == KeyNo || ScanKey == "")
+      continue;
+
+    TempBind = GetPlayerOwner().ConsoleCommand("KEYBINDING " $ ScanKey);
+    if (Contains(TempBind,"|UATOGGLEVIEW"))
+    {
+      TempBind = StrReplace(TempBind,"|uatoggleview","");
+      GetPlayerOwner().ConsoleCommand("SET Input " $ ScanKey @ TempBind);
+    }
+    if (Caps(TempBind) == "UATOGGLEVIEW")
       GetPlayerOwner().ConsoleCommand("SET Input " $ ScanKey);
   }
 }
@@ -714,6 +782,24 @@ function Notify(UWindowDialogControl C, byte E)
           {
             bPlayerCamKey = true;
             PlayerCamKeyButton.bDisabled = true;
+            DisplayInfo();
+          }
+        break;
+
+        case ViewToggleKeyButton:
+          if(ViewToggleKeyButton != none)
+          {
+            bViewToggleKey = true;
+            ViewToggleKeyButton.bDisabled = true;
+            DisplayInfo();
+          }
+        break;
+
+        case ViewToggleKeyButton:
+          if(ViewToggleKeyButton != none)
+          {
+            bViewToggleKey = true;
+            ViewToggleKeyButton.bDisabled = true;
             DisplayInfo();
           }
         break;

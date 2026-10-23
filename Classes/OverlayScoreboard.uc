@@ -22,8 +22,8 @@ struct PlayerStats
     var Pawn PlayerOwner;
 };
 
-var PlayerStats RedPlayer[5];
-var PlayerStats BluePlayer[5];
+var PlayerStats RedPlayer[16];
+var PlayerStats BluePlayer[16];
 var OverlayHUD OH;
 var Canvas CanvasX;
 var Font Font469_16, Font469_16b, Font469_18b;
@@ -69,7 +69,7 @@ function SortScores(int N,byte Team)
 {
   local int i,j,Max;
   local PlayerStats TempStats;
-  local PlayerStats Ordered[5];
+  local PlayerStats Ordered[16];
 
   for (i = 0; i < N; i++)
   {
@@ -101,9 +101,16 @@ function SortScores(int N,byte Team)
 
 // create usable player IDs //
 
+function int GetUATeamPlayerCount(byte Team)
+{
+  if (Team == 0)
+    return redPlayerCount;
+  return bluePlayerCount;
+}
+
 function PlayerReplicationInfo GetUAPlayerPRI(byte Team, int Index)
 {
-  if (Index < 0 || Index >= 5)
+  if (Index < 0 || Index >= 16)
     return None;
 
   if (Team == 0)
@@ -114,7 +121,7 @@ function PlayerReplicationInfo GetUAPlayerPRI(byte Team, int Index)
 
 function int GetUAPlayerCaps(byte Team, int Index)
 {
-  if (Index < 0 || Index >= 5)
+  if (Index < 0 || Index >= 16)
     return 0;
 
   if (Team == 0)
@@ -127,7 +134,7 @@ function int GetUAPlayerCaps(byte Team, int Index)
 // Keep PlayerStats inside this class to avoid UT99's 255-byte cross-class limit.
 function string GetUAPlayerName(byte Team, int Index)
 {
-  if (Index < 0 || Index >= 5)
+  if (Index < 0 || Index >= 16)
     return "";
 
   if (Team == 0)
@@ -138,7 +145,7 @@ function string GetUAPlayerName(byte Team, int Index)
 
 function int GetUAPlayerStat(byte Team, int Index, int StatID)
 {
-  if (Index < 0 || Index >= 5)
+  if (Index < 0 || Index >= 16)
     return 0;
 
   if (Team == 0)
@@ -167,11 +174,11 @@ function INT realPlayerID(int ID)
 {
   local int j;
 
-  for (j = 0; j < 5; j++)
+  for (j = 0; j < 16; j++)
     if (ID == redPlayer[j].PlayerNumber)
     return redPlayer[j].PRI.PlayerID;
 
-  for (j = 0; j < 5; j++)
+  for (j = 0; j < 16; j++)
     if (ID == bluePlayer[j].PlayerNumber)
     return bluePlayer[j].PRI.PlayerID;
 
@@ -185,13 +192,13 @@ function PlayerStats findStatByPRI(PlayerReplicationInfo PRI)
 
   if (PRI.Team == 0 )
   {
-  for (j = 0; j < 5; j++)
+  for (j = 0; j < 16; j++)
     if (PRI == redPlayer[j].PRI)
     return redPlayer[j];
   }
   else
   {
-  for (j = 0; j < 5; j++)
+  for (j = 0; j < 16; j++)
     if (PRI == bluePlayer[j].PRI)
     return bluePlayer[j];
   }
@@ -203,11 +210,15 @@ function UpdatePlayerStats(byte Team, ReplicationInfo RI, PlayerReplicationInfo 
 {
   if (Team == 0)
   {
+    if (redPlayerCount >= 16)
+      return;
     RedPlayer[redPlayerCount] = getPlayerData(RI,PRI,cID);
     redPlayerCount++;
   }
   else
   {
+    if (bluePlayerCount >= 16)
+      return;
     BluePlayer[bluePlayerCount] = getPlayerData(RI,PRI,cID);
     bluePlayerCount++;
   }
@@ -310,7 +321,7 @@ simulated function Timer()
 {
   local int j;
 
-  for (j = 0; j < 5; j++)
+  for (j = 0; j < 16; j++)
   {
     if (bluePlayer[j].PRI != none )
     {
@@ -443,14 +454,14 @@ function DrawTeamPanel(Canvas Canvas, byte Team, float StartX, float StartY, flo
   Canvas.DrawColor = SetColor(102,166,255);
 
   if (Team == 0)
-  DrawTextLeft(Canvas, "RED (" $ string(PlayerCount) $ ")  PLAYER", NameX, HeaderTextY, false, true);
+  DrawTextLeft(Canvas, "RED (" $ string(PlayerCount) $ ")", NameX, HeaderTextY, false, true);
   else
-  DrawTextLeft(Canvas, "BLUE (" $ string(PlayerCount) $ ") PLAYER", NameX, HeaderTextY, false, true);
+  DrawTextLeft(Canvas, "BLUE (" $ string(PlayerCount) $ ")", NameX, HeaderTextY, false, true);
 
   Canvas.DrawColor = SetColor(176,182,190);
   DrawTextRight(Canvas, "CAP", CapsX, HeaderTextY, false, true);
   DrawTextRight(Canvas, "GRB", GrabsX, HeaderTextY, false, true);
-  DrawTextRight(Canvas, "FCK", FCKillsX, HeaderTextY, false, true);
+  DrawTextRight(Canvas, "FK", FCKillsX, HeaderTextY, false, true);
   DrawTextRight(Canvas, "COV", CoversX, HeaderTextY, false, true);
   DrawTextRight(Canvas, "SEA", SealsX, HeaderTextY, false, true);
   DrawTextRight(Canvas, "FRG", FragsX, HeaderTextY, false, true);
