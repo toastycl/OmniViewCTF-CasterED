@@ -1840,8 +1840,11 @@ simulated function DrawTypingPrompt(Canvas Canvas, Console TypingConsole)
     if (ScoreRowH < YL + 4)
       ScoreRowH = YL + 4;
 
-    // 12 = table top margin; 6 rows = header + max five players.
-    PromptY = (12 * ResScale) + (ScoreRowH * 6) + 8;
+    // Follow the actual RED table height: header + all current players.
+    if (OS != None)
+      PromptY = (12 * ResScale) + (ScoreRowH * (OS.GetUATeamPlayerCount(0) + 1)) + 8;
+    else
+      PromptY = (12 * ResScale) + (ScoreRowH * 6) + 8;
   }
   else
   {
@@ -1892,7 +1895,10 @@ function DrawKillFeed(Canvas canvas)
     ScoreRowH = 19 * ResScale;
     if (ScoreRowH < YL + 4)
     ScoreRowH = YL + 4;
-    FeedTop = (12 * ResScale) + (ScoreRowH * 6);
+    if (OS != None)
+      FeedTop = (12 * ResScale) + (ScoreRowH * (OS.GetUATeamPlayerCount(1) + 1));
+    else
+      FeedTop = (12 * ResScale) + (ScoreRowH * 6);
   }
   else
     FeedTop = 2;
@@ -2028,9 +2034,12 @@ function DrawChat(Canvas Canvas)
     if (ScoreRowH < YL + 4)
       ScoreRowH = YL + 4;
 
-    // Reserve one permanent text-entry line immediately below RED scoreboard.
-    // DrawTypingPrompt uses this lane, while chat begins below it.
-    ChatTop = (12 * ResScale) + (ScoreRowH * 6) + YL + 10;
+    // Reserve one permanent text-entry line immediately below the actual RED
+    // scoreboard height. DrawTypingPrompt uses this lane; chat begins below it.
+    if (OS != None)
+      ChatTop = (12 * ResScale) + (ScoreRowH * (OS.GetUATeamPlayerCount(0) + 1)) + YL + 10;
+    else
+      ChatTop = (12 * ResScale) + (ScoreRowH * 6) + YL + 10;
   }
   else
     ChatTop = YL + 10;
