@@ -3127,6 +3127,7 @@ simulated function DrawUASpectatorStatus(Canvas Canvas)
 {
   local float BoxW, BoxH, BoxX, BoxY, XL, YL, UIScale, TimerReserve, IconSize;
   local float LabelX, NameX, NameMaxW, StatsX, Gap, DividerX, StateX, StateReserve;
+  local float TextY, IconY, LeftPad, RightPad, CenterStart, CenterWidth;
   local string PName, RawName, TeamText, HPValue, ArmorValue, NameBlock, AmpText;
   local color Accent;
   local bool bFollowing, bObservedFC, bObservedAMP, bObservedBoots;
@@ -3218,7 +3219,15 @@ simulated function DrawUASpectatorStatus(Canvas Canvas)
   BoxX = Canvas.ClipX * 0.5 - BoxW * 0.5;
   BoxY = Canvas.ClipY - TimerReserve - BoxH - 6 * UIScale;
   IconSize = 16 * UIScale;
-  Gap = 10 * UIScale;
+  Gap = 12 * UIScale;
+  LeftPad = 18 * UIScale;
+  RightPad = 18 * UIScale;
+
+  // All content uses a shared vertical center instead of fixed top offsets.
+  Canvas.Font = Font469_16b;
+  Canvas.StrLen("Ag", XL, YL);
+  TextY = BoxY + (BoxH - YL) * 0.5;
+  IconY = BoxY + (BoxH - IconSize) * 0.5;
 
   Canvas.DrawColor = SetColor(9,11,15);
   Canvas.SetPos(BoxX, BoxY);
@@ -3235,7 +3244,7 @@ simulated function DrawUASpectatorStatus(Canvas Canvas)
 
   // Reserve the right side for HP + Armor so long nicknames can never collide.
   // FC / AMP badges get their own conditional slot immediately before it.
-  StatsX = BoxX + BoxW - (148 * UIScale);
+  StatsX = BoxX + BoxW - RightPad - (142 * UIScale);
   DividerX = StatsX - Gap;
   StateReserve = 0;
   if (bObservedFC)
@@ -3254,12 +3263,12 @@ simulated function DrawUASpectatorStatus(Canvas Canvas)
 
   Canvas.Font = Font469_16;
   Canvas.DrawColor = SetColor(156,162,170);
-  LabelX = BoxX + 12 * UIScale;
-  Canvas.SetPos(LabelX, BoxY + 10 * UIScale);
-  Canvas.DrawText("Spectating", False);
+  LabelX = BoxX + LeftPad;
   Canvas.StrLen("Spectating", XL, YL);
+  Canvas.SetPos(LabelX, BoxY + (BoxH - YL) * 0.5);
+  Canvas.DrawText("Spectating", False);
 
-  NameX = LabelX + XL + 12 * UIScale;
+  NameX = LabelX + XL + 14 * UIScale;
   NameMaxW = StateX - NameX - Gap;
   if (NameMaxW < 54 * UIScale)
     NameMaxW = 54 * UIScale;
@@ -3284,7 +3293,8 @@ simulated function DrawUASpectatorStatus(Canvas Canvas)
   }
 
   Canvas.DrawColor = Accent;
-  Canvas.SetPos(NameX, BoxY + 10 * UIScale);
+  Canvas.StrLen(NameBlock, XL, YL);
+  Canvas.SetPos(NameX, BoxY + (BoxH - YL) * 0.5);
   Canvas.DrawText(NameBlock, False);
 
   // Compact live-state badges for the player being followed.  They only
@@ -3296,7 +3306,8 @@ simulated function DrawUASpectatorStatus(Canvas Canvas)
     else
       Canvas.DrawColor = SetColor(235,65,65);
     Canvas.Font = Font469_16b;
-    Canvas.SetPos(StateX + 4 * UIScale, BoxY + 10 * UIScale);
+    Canvas.StrLen("FC", XL, YL);
+    Canvas.SetPos(StateX + 4 * UIScale, BoxY + (BoxH - YL) * 0.5);
     Canvas.DrawText("FC", False);
     StateX += 30 * UIScale;
   }
@@ -3305,7 +3316,8 @@ simulated function DrawUASpectatorStatus(Canvas Canvas)
   {
     Canvas.DrawColor = SetColor(178,96,226);
     Canvas.Font = Font469_16b;
-    Canvas.SetPos(StateX + 4 * UIScale, BoxY + 10 * UIScale);
+    Canvas.StrLen(AmpText, XL, YL);
+    Canvas.SetPos(StateX + 4 * UIScale, BoxY + (BoxH - YL) * 0.5);
     Canvas.DrawText(AmpText, False);
     StateX += 58 * UIScale;
   }
@@ -3314,7 +3326,8 @@ simulated function DrawUASpectatorStatus(Canvas Canvas)
   {
     Canvas.DrawColor = SetColor(118,196,232);
     Canvas.Font = Font469_16b;
-    Canvas.SetPos(StateX + 4 * UIScale, BoxY + 10 * UIScale);
+    Canvas.StrLen("BOOTS", XL, YL);
+    Canvas.SetPos(StateX + 4 * UIScale, BoxY + (BoxH - YL) * 0.5);
     Canvas.DrawText("BOOTS", False);
   }
 
@@ -3323,21 +3336,23 @@ simulated function DrawUASpectatorStatus(Canvas Canvas)
 
   // Fixed right-side stat cells with deliberate spacing between icon/value pairs.
   Canvas.DrawColor = SetColor(225,225,225);
-  Canvas.SetPos(StatsX, BoxY + 10 * UIScale);
+  Canvas.SetPos(StatsX, IconY);
   Canvas.DrawTile(Texture'health_icon', IconSize, IconSize, 0, 0, 128, 128);
 
   Canvas.Font = Font469_16b;
   Canvas.DrawColor = SetColor(226,230,236);
-  Canvas.SetPos(StatsX + 21 * UIScale, BoxY + 10 * UIScale);
+  Canvas.StrLen(HPValue, XL, YL);
+  Canvas.SetPos(StatsX + 23 * UIScale, BoxY + (BoxH - YL) * 0.5);
   Canvas.DrawText(HPValue, False);
 
   Canvas.DrawColor = SetColor(208,174,68);
-  Canvas.SetPos(StatsX + 76 * UIScale, BoxY + 10 * UIScale);
+  Canvas.SetPos(StatsX + 76 * UIScale, IconY);
   Canvas.DrawTile(Texture'armor_icon', IconSize, IconSize, 0, 0, 128, 128);
 
   Canvas.Font = Font469_16b;
   Canvas.DrawColor = SetColor(226,198,118);
-  Canvas.SetPos(StatsX + 97 * UIScale, BoxY + 10 * UIScale);
+  Canvas.StrLen(ArmorValue, XL, YL);
+  Canvas.SetPos(StatsX + 99 * UIScale, BoxY + (BoxH - YL) * 0.5);
   Canvas.DrawText(ArmorValue, False);
 }
 
@@ -3391,7 +3406,9 @@ function DrawUAPlayerCam(Canvas Canvas)
   local Pawn P;
   local vector CamLocation;
   local rotator CamRotation;
-  local float W, H, X, Y, SlideY, CrossX, CrossY;
+  local float W, H, X, Y, SlideY, CrossX, CrossY, XL, YL;
+  local color NameColor;
+  local string PlayerName;
   local bool bOldHidden;
 
   if ((!bUAPlayerCamActive && !bUAPlayerCamClosing) || UAPlayerCamAlpha <= 0.0)
@@ -3472,24 +3489,43 @@ function DrawUAPlayerCam(Canvas Canvas)
 
   P.bHidden = bOldHidden;
 
-  // Frameless Player Cam: only a compact crosshair remains over the portal.
+  // Frameless Player Cam: identify the locked player without restoring a frame/header.
+  PlayerName = UAPlayerCamPRI.PlayerName;
+  if (Len(PlayerName) > 22)
+    PlayerName = Left(PlayerName,20) $ "..";
+
+  if (UAPlayerCamPRI.Team == 0)
+    NameColor = SetColor(235,75,75);
+  else
+    NameColor = SetColor(85,145,255);
+
+  Canvas.Style = ERenderStyle.STY_Normal;
+  Canvas.Font = Font469_16b;
+  Canvas.StrLen(PlayerName, XL, YL);
+
+  // Subtle shadow for readability directly over the portal image.
+  Canvas.DrawColor = SetColor(0,0,0);
+  Canvas.SetPos(X + 11, Y + 9);
+  Canvas.DrawText(PlayerName, False);
+  Canvas.DrawColor = NameColor;
+  Canvas.SetPos(X + 10, Y + 8);
+  Canvas.DrawText(PlayerName, False);
+
   CrossX = X + W * 0.5;
   CrossY = Y + H * 0.5;
 
-  Canvas.Style = ERenderStyle.STY_Normal;
-
-  // 1 px dark shadow keeps the reticle readable on bright maps.
+  // Crosshair reduced ~20% from the previous v2.1 test build.
   Canvas.DrawColor = SetColor(0,0,0);
-  Canvas.SetPos(CrossX - 8, CrossY);
-  Canvas.DrawRect(Texture'white_1x1', 17, 2);
-  Canvas.SetPos(CrossX, CrossY - 8);
-  Canvas.DrawRect(Texture'white_1x1', 2, 17);
+  Canvas.SetPos(CrossX - 6.5, CrossY);
+  Canvas.DrawRect(Texture'white_1x1', 14, 2);
+  Canvas.SetPos(CrossX, CrossY - 6.5);
+  Canvas.DrawRect(Texture'white_1x1', 2, 14);
 
   Canvas.DrawColor = SetColor(235,235,235);
-  Canvas.SetPos(CrossX - 7, CrossY);
-  Canvas.DrawRect(Texture'white_1x1', 15, 1);
-  Canvas.SetPos(CrossX, CrossY - 7);
-  Canvas.DrawRect(Texture'white_1x1', 1, 15);
+  Canvas.SetPos(CrossX - 6, CrossY);
+  Canvas.DrawRect(Texture'white_1x1', 12, 1);
+  Canvas.SetPos(CrossX, CrossY - 6);
+  Canvas.DrawRect(Texture'white_1x1', 1, 12);
 }
 
 function string GetUATimerLabel(Inventory P)
