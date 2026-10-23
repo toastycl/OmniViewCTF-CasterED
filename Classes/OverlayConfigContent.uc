@@ -438,6 +438,12 @@ function LoadExistingKeys()
         PlayerCamKeyButton.SetText(KeyName);
         OldPlayerCamKey = KeyName;
       }
+
+      if(Contains(Alias,"|uatoggleview") )
+      {
+        ViewToggleKeyButton.SetText(KeyName);
+        OldViewToggleKey = KeyName;
+      }
     }
   }
   return;
@@ -453,6 +459,8 @@ function DisplayInfo()
     MVPKeyBind.SetText("...");
   if(!PlayerCamKeyButton.bDisabled)
     PlayerCamKeyBind.SetText("...");
+  if(!ViewToggleKeyButton.bDisabled)
+    ViewToggleKeyBind.SetText("...");
   return;
 }
 
@@ -463,14 +471,17 @@ function KeyDown(int Key, float X, float Y)
   bCompareKey = false;
   bMVPKey = false;
   bPlayerCamKey = false;
+  bViewToggleKey = false;
   HotKeyButton.bDisabled = false;
   CompareKeyButton.bDisabled = false;
   MVPKeyButton.bDisabled = false;
   PlayerCamKeyButton.bDisabled = false;
+  ViewToggleKeyButton.bDisabled = false;
   HotKeyBind.SetText("");
   CompareKeyBind.SetText("");
   MVPKeyBind.SetText("");
   PlayerCamKeyBind.SetText("");
+  ViewToggleKeyBind.SetText("");
 }
 
 function ProcessKey(int KeyNo, string KeyName)
@@ -500,6 +511,11 @@ function ProcessKey(int KeyNo, string KeyName)
   if(bPlayerCamKey)
   {
     SetPlayerCamKey(KeyNo, KeyName);
+    return;
+  }
+  if(bViewToggleKey)
+  {
+    SetViewToggleKey(KeyNo, KeyName);
     return;
   }
   return;
