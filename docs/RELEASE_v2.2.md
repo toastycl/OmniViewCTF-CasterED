@@ -16,7 +16,7 @@ v2.2 adds live weapon information to the spectator HUD while keeping the compact
 
 ## Example
 
-`Spectating lockpick-JH- [RED] | Flak Cannon 7 | FC | AMP | Boots | HP | Armor`
+`Spectating PlayerName [RED] | Flak Cannon 7 | FC | AMP | Boots | HP | Armor`
 
 ## Runtime files
 
