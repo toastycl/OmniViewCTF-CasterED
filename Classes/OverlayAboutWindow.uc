@@ -41,7 +41,7 @@ function Created()
     OV_Version.SetFont (F_Normal);
 
     OV_Version = UMenuLabelControl(CreateControl(Class'UMenuLabelControl', 85.0, Cury, 150.0, 1.0));
-    OV_Version.SetText ("2.0 Caster Edition - ToastyCL");
+    OV_Version.SetText ("2.2 Caster Edition - ToastyCL");
    	OV_Version.Align = TA_Left;
     OV_Version.SetFont (F_Normal);
     Cury = Cury + 14;
@@ -52,7 +52,7 @@ function Created()
     OV_ReleaseDate.SetFont (F_Normal);
 
     OV_ReleaseDate = UMenuLabelControl(CreateControl(Class'UMenuLabelControl', 85.0, Cury, 150.0, 1.0));
-    OV_ReleaseDate.SetText ("17th October 2026");
+    OV_ReleaseDate.SetText ("25th October 2026");
    	OV_ReleaseDate.Align = TA_Left;
     OV_ReleaseDate.SetFont (F_Normal);
     Cury = Cury + 14;
