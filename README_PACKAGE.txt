@@ -86,11 +86,11 @@ While spectating a player, the lower HUD shows the current weapon on the same li
 
 Example:
 
-Spectating lockpick-JH- [RED] | Flak Cannon 7
+Spectating PlayerName [RED] | Flak Cannon 7
 
 For weapons without a meaningful ammo counter:
 
-Spectating lockpick-JH- [RED] | Impact Hammer
+Spectating PlayerName [RED] | Impact Hammer
 
 The information updates automatically when the player changes weapon or ammunition changes.
 
