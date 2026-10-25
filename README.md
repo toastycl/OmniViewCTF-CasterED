@@ -1,4 +1,4 @@
-# OmniViewCTF - Caster Edition v2.1
+# OmniViewCTF - Caster Edition v2.2
 
 OmniViewCTF - Caster Edition is a neutral broadcast-oriented fork of OmniViewCTF for Unreal Tournament 99 CTF.
 
@@ -8,8 +8,20 @@ It focuses on giving casters a cleaner spectator HUD, compact live statistics, s
 
 ## Version history
 
-### v2.1 - Caster Edition
+### v2.2 - Caster Edition
 Current release / edit by **ToastyCL**.
+
+v2.2 adds live weapon information to the spectator bar while preserving the compact single-line broadcast layout.
+
+Highlights:
+- Current weapon shown for the player being spectated
+- Live ammunition count shown when applicable
+- Compact ` | ` separator between player identity and weapon information
+- Ammo omitted for Impact Hammer, Translocator and Super Shock Rifle
+- Automatic trimming for long player or custom weapon names
+- Existing FC / AMP / Boots / HP / Armor layout preserved
+
+### v2.1 - Caster Edition
 
 v2.1 focuses on broadcast polish, Player Cam usability, larger-team support, and improved HUD positioning.
 
@@ -35,6 +47,27 @@ Introduced the neutral Caster Edition package with the compact scoreboard, Playe
 
 ### Original project
 Original OmniView4CTF by **Waylander / double_u**.
+
+---
+
+# What's new in v2.2
+
+## Live weapon + ammo in spectator HUD
+
+While following a player, the lower spectator HUD now includes the player's current weapon and remaining ammunition on the same line.
+
+Example:
+
+`Spectating lockpick-JH- [RED] | Flak Cannon 7 | FC | AMP | Boots | HP | Armor`
+
+The weapon information updates live when the observed player changes weapon, fires, picks up ammunition, respawns, or when the caster changes spectator target.
+
+Weapons without a meaningful ammunition counter are shown without a number, including:
+- Impact Hammer
+- Translocator
+- Super Shock Rifle
+
+Long player names or custom weapon names are automatically trimmed to protect the rest of the spectator HUD.
 
 ---
 
@@ -359,8 +392,8 @@ Please keep the original credits and fork history when redistributing modified v
 
 ## Release
 
-**OmniViewCTF - Caster Edition v2.1**
+**OmniViewCTF - Caster Edition v2.2**
 
 **Caster Edition edit by ToastyCL**
 
-Released: **23 October 2026**
+Released: **25 October 2026**

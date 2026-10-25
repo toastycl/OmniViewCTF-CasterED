@@ -1,5 +1,16 @@
 # Changelog
 
+## v2.2 - Caster Edition
+Edit by **ToastyCL**.
+
+### Spectator HUD
+- Added current weapon information for the player being spectated
+- Added live ammunition count when the active weapon uses ammo
+- Added compact ` | ` separator between player identity and weapon information
+- Impact Hammer, Translocator and Super Shock Rifle are shown without an ammo counter
+- Added automatic trimming for long player and custom weapon names
+- Preserved existing FC / AMP / Boots / HP / Armor layout and single-line presentation
+
 ## v2.1 - Caster Edition
 Edit by **ToastyCL**.
 

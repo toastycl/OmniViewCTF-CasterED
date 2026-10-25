@@ -1,8 +1,8 @@
-OmniViewCTF - Caster Edition v2.1
+OmniViewCTF - Caster Edition v2.2
 ====================================
 
 Edit by ToastyCL
-Released: 23 October 2026
+Released: 25 October 2026
 
 ABOUT
 -----
@@ -10,8 +10,13 @@ OmniViewCTF - Caster Edition is a broadcast-oriented spectator HUD for Unreal To
 
 This package focuses on a cleaner caster layout, compact SmartCTF statistics, item timers, Player Cam, comparison tools, and improved spectator controls.
 
-WHAT'S NEW IN v2.1
+WHAT'S NEW IN v2.2
 ------------------
+- Current weapon shown in the Spectating bar
+- Live ammunition count when applicable
+- Compact " | " separator between player and weapon information
+- Ammo omitted for Impact Hammer, Translocator and Super Shock Rifle
+- Automatic trimming for long player / weapon names
 - Frameless Player Cam
 - Team-colored player name inside Player Cam
 - Smaller centered Player Cam crosshair
@@ -74,6 +79,20 @@ The View toggle key switches the main spectator camera between:
 
 BehindView 0
 BehindView 1
+
+WEAPON / AMMO
+-------------
+While spectating a player, the lower HUD shows the current weapon on the same line.
+
+Example:
+
+Spectating lockpick-JH- [RED] | Flak Cannon 7
+
+For weapons without a meaningful ammo counter:
+
+Spectating lockpick-JH- [RED] | Impact Hammer
+
+The information updates automatically when the player changes weapon or ammunition changes.
 
 SCOREBOARD
 ----------
