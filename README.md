@@ -58,7 +58,7 @@ While following a player, the lower spectator HUD now includes the player's curr
 
 Example:
 
-`Spectating lockpick-JH- [RED] | Flak Cannon 7 | FC | AMP | Boots | HP | Armor`
+`Spectating PlayerName [RED] | Flak Cannon 7 | FC | AMP | Boots | HP | Armor`
 
 The weapon information updates live when the observed player changes weapon, fires, picks up ammunition, respawns, or when the caster changes spectator target.
 
