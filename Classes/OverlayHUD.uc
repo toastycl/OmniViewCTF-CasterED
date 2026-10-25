@@ -3164,10 +3164,12 @@ simulated function DrawUASpectatorStatus(Canvas Canvas)
   local float BoxW, BoxH, BoxX, BoxY, XL, YL, UIScale, TimerReserve, IconSize;
   local float LabelX, NameX, NameMaxW, StatsX, Gap, DividerX, StateX, StateReserve;
   local float TextY, IconY, LeftPad, RightPad, CenterStart, CenterWidth;
+  local float WeaponX, WeaponMaxW, WeaponTextW, SeparatorW;
   local string PName, RawName, TeamText, HPValue, ArmorValue, NameBlock, AmpText, BootsText;
+  local string WeaponText, WeaponName, SeparatorText;
   local color Accent;
-  local bool bFollowing, bObservedFC, bObservedAMP, bObservedBoots;
-  local int NameChars, BootsCharge;
+  local bool bFollowing, bObservedFC, bObservedAMP, bObservedBoots, bShowWeaponAmmo;
+  local int NameChars, BootsCharge, WeaponChars;
   local Inventory BootsInv;
 
   // UT99 fonts are fixed-pixel. Keep normal layouts at 1.0 and only enlarge
@@ -3257,7 +3259,9 @@ simulated function DrawUASpectatorStatus(Canvas Canvas)
   }
 
   // Responsive width with a safe margin on narrow 4:3 / low-res canvases.
-  BoxW = 510 * UIScale;
+  // v2.2 adds current weapon/ammo on the same line, so give the bar a little
+  // more horizontal room while still clamping safely on narrow resolutions.
+  BoxW = 600 * UIScale;
   if (BoxW > Canvas.ClipX - 24 * UIScale)
     BoxW = Canvas.ClipX - 24 * UIScale;
   BoxH = 38 * UIScale;
@@ -3308,6 +3312,30 @@ simulated function DrawUASpectatorStatus(Canvas Canvas)
   }
   StateX = DividerX - StateReserve;
 
+  SeparatorText = "|";
+  Canvas.Font = Font469_16;
+  Canvas.StrLen(SeparatorText, SeparatorW, YL);
+
+  WeaponText = "";
+  WeaponName = "";
+  bShowWeaponAmmo = false;
+  if (PawnOwner.Weapon != None)
+  {
+    WeaponName = PawnOwner.Weapon.ItemName;
+    if (WeaponName == "")
+      WeaponName = GetItemName(String(PawnOwner.Weapon));
+
+    bShowWeaponAmmo = (PawnOwner.Weapon.AmmoType != None
+      && !PawnOwner.Weapon.IsA('ImpactHammer')
+      && !PawnOwner.Weapon.IsA('Translocator')
+      && !PawnOwner.Weapon.IsA('SuperShockRifle'));
+
+    if (bShowWeaponAmmo)
+      WeaponText = WeaponName $ " " $ string(Max(0, PawnOwner.Weapon.AmmoType.AmmoAmount));
+    else
+      WeaponText = WeaponName;
+  }
+
   // Removed the old vertical divider here because in-game it could read as
   // an accidental extra bar next to the spectated player name.
 
@@ -3319,7 +3347,16 @@ simulated function DrawUASpectatorStatus(Canvas Canvas)
   Canvas.DrawText("Spectating", False);
 
   NameX = LabelX + XL + 14 * UIScale;
-  NameMaxW = StateX - NameX - Gap;
+
+  // Reserve a compact weapon slot between the player identity and live states.
+  WeaponMaxW = 118 * UIScale;
+  if (WeaponText == "")
+    WeaponMaxW = 0;
+
+  NameMaxW = StateX - NameX - Gap - WeaponMaxW;
+  if (WeaponText != "")
+    NameMaxW -= (SeparatorW + 16 * UIScale);
+
   if (NameMaxW < 54 * UIScale)
     NameMaxW = 54 * UIScale;
 
@@ -3346,6 +3383,39 @@ simulated function DrawUASpectatorStatus(Canvas Canvas)
   Canvas.StrLen(NameBlock, XL, YL);
   Canvas.SetPos(NameX, BoxY + (BoxH - YL) * 0.5);
   Canvas.DrawText(NameBlock, False);
+
+  // Current weapon + ammo stays on the same line, separated from the player
+  // identity with a quiet pipe. Long custom weapon names are pixel-trimmed.
+  if (WeaponText != "")
+  {
+    WeaponX = NameX + XL + 8 * UIScale;
+
+    Canvas.Font = Font469_16;
+    Canvas.DrawColor = SetColor(112,118,128);
+    Canvas.SetPos(WeaponX, BoxY + (BoxH - YL) * 0.5);
+    Canvas.DrawText(SeparatorText, False);
+
+    WeaponX += SeparatorW + 8 * UIScale;
+    WeaponChars = Len(WeaponText);
+    Canvas.Font = Font469_16b;
+    Canvas.StrLen(WeaponText, WeaponTextW, YL);
+
+    while (WeaponTextW > WeaponMaxW && WeaponChars > 5)
+    {
+      WeaponChars--;
+      if (bShowWeaponAmmo)
+        WeaponText = Left(WeaponName, Max(1, WeaponChars - Len(string(Max(0, PawnOwner.Weapon.AmmoType.AmmoAmount))) - 3))
+          $ ".. " $ string(Max(0, PawnOwner.Weapon.AmmoType.AmmoAmount));
+      else
+        WeaponText = Left(WeaponName, WeaponChars) $ "..";
+
+      Canvas.StrLen(WeaponText, WeaponTextW, YL);
+    }
+
+    Canvas.DrawColor = SetColor(210,214,220);
+    Canvas.SetPos(WeaponX, BoxY + (BoxH - YL) * 0.5);
+    Canvas.DrawText(WeaponText, False);
+  }
 
   // Compact live-state badges for the player being followed.  They only
   // consume space when active, so the normal spectator bar stays unchanged.
